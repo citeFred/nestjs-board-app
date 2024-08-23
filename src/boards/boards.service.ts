@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { Board } from './board.entity';
 import { BoardStatus } from './board-status.enum';
+import { CreateBoardDto } from './dto/create-board.dto';
 
 @Injectable()
 export class BoardsService {
     private boards: Board[] = []; // 임시 DB처럼 사용할 배열(로컬 메모리) // 저장되는 데이터 타입 Board[] 배열
 
     // 게시글 작성
-    createBoard(author: string, title: string, contents: string) {
+    createBoard(createBoardDto: CreateBoardDto) {
+        const {author, title, contents} = createBoardDto;
+
         const board: Board = {
             id: this.boards.length + 1, // 임시 Auto Increament 
             author,
