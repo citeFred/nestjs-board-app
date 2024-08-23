@@ -27,4 +27,9 @@ export class BoardsService {
     getAllBoards(): Board[] { // 반환 타입 Board[] 배열
         return this.boards;
     }
+
+    // 특정 번호의 게시글 조회
+    getBoardById(id: number): Board {
+        return this.boards.find((board) => board.id == id);
+    }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { Board } from './board.entity';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -18,5 +18,11 @@ export class BoardsController {
     @Get('/') // GetMapping 핸들러 데코레이터
     getAllBoard(): Board[] { // 반환 타입 Board[] 배열
         return this.boardsService.getAllBoards();
+    }
+
+    // 특정 번호의 게시글 조회
+    @Get('/:id')
+    getBoardById(@Param('id') id: number): Board{
+        return this.boardsService.getBoardById(id);
     }
 }
