@@ -5,7 +5,7 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardStatus } from './board-status.enum';
 import { UpdateBoardDto } from './dto/update-board.dto';
 
-@Controller('boards')
+@Controller('api/boards')
 export class BoardsController {
     // 생성자 주입(DI)
     constructor(private boardsService: BoardsService){}
