@@ -42,4 +42,11 @@ export class BoardsService {
     deleteBoardById(id: number): void{
         this.boards = this.boards.filter((board) => board.id != id);
     }
+
+    // 특정 번호의 게시글의 일부 수정
+    updateBoardStatusById(id: number, status: BoardStatus): Board {
+        const board = this.getBoardById(id);
+        board.status = status;
+        return board;
+    }
 }

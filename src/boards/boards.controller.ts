@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { Board } from './board.entity';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { BoardStatus } from './board-status.enum';
 
 @Controller('boards')
 export class BoardsController {
@@ -37,4 +38,10 @@ export class BoardsController {
     deleteBoardById(@Param('id') id: number): void {
         this.boardsService.deleteBoardById(id);
     }
+
+    // 특정 번호의 게시글의 일부 수정
+    @Patch('/:id/status')
+    updateBoardStatusById(@Param('id') id: number, @Body('status') status: BoardStatus): Board {
+        return this.boardsService.updateBoardStatusById(id, status)
+    } 
 }
