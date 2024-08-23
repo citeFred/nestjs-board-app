@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Board } from './board.entity';
 import { BoardStatus } from './board-status.enum';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { UpdateBoardDto } from './dto/update-board.dto';
 
 @Injectable()
 export class BoardsService {
@@ -46,6 +47,18 @@ export class BoardsService {
     // 특정 번호의 게시글의 일부 수정
     updateBoardStatusById(id: number, status: BoardStatus): Board {
         const board = this.getBoardById(id);
+        board.status = status;
+        return board;
+    }
+
+    // 특정 번호의 게시글의 전체 수정
+    updateBoardById(id, updateBoardDto : UpdateBoardDto): Board {
+        const board = this.getBoardById(id);
+        const {author, title, contents, status} = updateBoardDto;
+
+        board.author = author;
+        board.title = title;
+        board.contents = contents;
         board.status = status;
         return board;
     }
