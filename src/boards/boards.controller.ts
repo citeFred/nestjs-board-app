@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { BoardsService } from './boards.service';
+import { Board } from './board.entity';
 
 @Controller('boards')
 export class BoardsController {
@@ -7,7 +8,7 @@ export class BoardsController {
     constructor(private boardsService: BoardsService){}
     
     @Get('/') // GetMapping 핸들러 데코레이터
-    getAllBoard(){
+    getAllBoard(): Board[] { // 반환 타입 Board[] 배열
         return this.boardsService.getAllBoards();
     }
 }
