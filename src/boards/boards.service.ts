@@ -32,4 +32,9 @@ export class BoardsService {
     getBoardById(id: number): Board {
         return this.boards.find((board) => board.id == id);
     }
+
+    // 특정 작성자의 게시글 조회
+    getBoardByAuthor(author: string): Board[]{
+        return this.boards.filter((board) => board.author === author)
+    }
 }
