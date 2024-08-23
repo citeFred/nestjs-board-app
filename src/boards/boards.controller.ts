@@ -3,11 +3,11 @@ import { BoardsService } from './boards.service';
 
 @Controller('boards')
 export class BoardsController {
+    // 생성자 주입(DI)
     constructor(private boardsService: BoardsService){}
     
-    @Get('hello')
-    async getHello(): Promise<string> {
-        this.boardsService.hello();
-        return "hi";
+    @Get('/') // GetMapping 핸들러 데코레이터
+    getAllBoard(){
+        return this.boardsService.getAllBoards();
     }
 }
