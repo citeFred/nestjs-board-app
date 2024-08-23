@@ -37,4 +37,9 @@ export class BoardsService {
     getBoardByAuthor(author: string): Board[]{
         return this.boards.filter((board) => board.author === author)
     }
+
+    // 특정 번호의 게시글 삭제
+    deleteBoardById(id: number): void{
+        this.boards = this.boards.filter((board) => board.id != id);
+    }
 }
