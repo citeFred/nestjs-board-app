@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Board } from './board.entity';
 import { BoardStatus } from './board-status.enum';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -31,7 +31,11 @@ export class BoardsService {
 
     // 특정 번호의 게시글 조회
     getBoardById(id: number): Board {
-        return this.boards.find((board) => board.id == id);
+        const foundBoard = this.boards.find((board) => board.id == id);
+        if(!foundBoard) {
+            throw new NotFoundException(`Board with ID ${id} not found`); // 메시지 ` = 백틱으로 감싸야 ${id} 동작
+        }
+        return foundBoard;
     }
 
     // 특정 작성자의 게시글 조회
