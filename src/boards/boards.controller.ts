@@ -4,6 +4,7 @@ import { Board } from './board.entity';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardStatus } from './board-status.enum';
 import { UpdateBoardDto } from './dto/update-board.dto';
+import { BoardStatusValidationPipe } from './pipes/board-status-validation.pipe';
 
 @Controller('api/boards')
 export class BoardsController {
@@ -43,7 +44,7 @@ export class BoardsController {
 
     // 특정 번호의 게시글의 일부 수정
     @Patch('/:id/status')
-    updateBoardStatusById(@Param('id') id: number, @Body('status') status: BoardStatus) {
+    updateBoardStatusById(@Param('id') id: number, @Body('status', BoardStatusValidationPipe) status: BoardStatus) {
         this.boardsService.updateBoardStatusById(id, status)
     } 
 
