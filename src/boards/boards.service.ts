@@ -50,20 +50,20 @@ export class BoardsService {
 
     // 특정 번호의 게시글의 일부 수정
     updateBoardStatusById(id: number, status: BoardStatus): Board {
-        const board = this.getBoardById(id);
-        board.status = status;
-        return board;
+        const foundBoard = this.getBoardById(id);
+        foundBoard.status = status;
+        return foundBoard;
     }
 
     // 특정 번호의 게시글의 전체 수정
     updateBoardById(id, updateBoardDto : UpdateBoardDto): Board {
-        const board = this.getBoardById(id);
+        const foundBoard = this.getBoardById(id);
         const {author, title, contents, status} = updateBoardDto;
 
-        board.author = author;
-        board.title = title;
-        board.contents = contents;
-        board.status = status;
-        return board;
+        foundBoard.author = author;
+        foundBoard.title = title;
+        foundBoard.contents = contents;
+        foundBoard.status = status;
+        return foundBoard;
     }
 }
