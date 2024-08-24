@@ -51,14 +51,13 @@ export class BoardsService {
     }
 
     // 특정 번호의 게시글의 일부 수정
-    updateBoardStatusById(id: number, status: BoardStatus): Board {
+    updateBoardStatusById(id: number, status: BoardStatus) {
         const foundBoard = this.getBoardById(id);
         foundBoard.status = status;
-        return foundBoard;
     }
 
     // 특정 번호의 게시글의 전체 수정
-    updateBoardById(id, updateBoardDto : UpdateBoardDto): Board {
+    updateBoardById(id, updateBoardDto : UpdateBoardDto) {
         const foundBoard = this.getBoardById(id);
         const {author, title, contents, status} = updateBoardDto;
 
@@ -66,6 +65,5 @@ export class BoardsService {
         foundBoard.title = title;
         foundBoard.contents = contents;
         foundBoard.status = status;
-        return foundBoard;
     }
 }

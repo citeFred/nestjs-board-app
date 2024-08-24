@@ -43,13 +43,13 @@ export class BoardsController {
 
     // 특정 번호의 게시글의 일부 수정
     @Patch('/:id/status')
-    updateBoardStatusById(@Param('id') id: number, @Body('status') status: BoardStatus): Board {
-        return this.boardsService.updateBoardStatusById(id, status)
+    updateBoardStatusById(@Param('id') id: number, @Body('status') status: BoardStatus) {
+        this.boardsService.updateBoardStatusById(id, status)
     } 
 
     // 특정 번호의 게시글의 전체 수정
     @Put('/:id')
-    updateBoardById(@Param('id') id: number, @Body() updateBoardDto: UpdateBoardDto): Board {
-        return this.boardsService.updateBoardById(id, updateBoardDto)
+    updateBoardById(@Param('id') id: number, @Body() updateBoardDto: UpdateBoardDto) {
+        this.boardsService.updateBoardById(id, updateBoardDto)
     } 
 }
