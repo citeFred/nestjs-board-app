@@ -45,7 +45,9 @@ export class BoardsService {
 
     // 특정 번호의 게시글 삭제
     deleteBoardById(id: number): void{
-        this.boards = this.boards.filter((board) => board.id != id);
+        const foundBoard = this.getBoardById(id);
+
+        this.boards = this.boards.filter((board) => board.id != foundBoard.id);
     }
 
     // 특정 번호의 게시글의 일부 수정
