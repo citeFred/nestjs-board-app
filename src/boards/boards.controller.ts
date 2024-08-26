@@ -14,25 +14,25 @@ export class BoardsController {
     // 게시글 작성 기능
     @Post('/') // PostMapping 핸들러 데코레이터
     @UsePipes(ValidationPipe) // 핸들러 레벨 유효성 검사 파이프 설정
-    createBoard(@Body() createBoardDto: CreateBoardDto): Promise<Board>  {
+    createBoard(@Body() createBoardDto: CreateBoardDto): Promise<Board> {
         return this.boardsService.createBoard(createBoardDto)
     }
 
     // 게시글 조회 기능
     @Get('/') // GetMapping 핸들러 데코레이터
-    getAllBoard(): Promise<Board[]> { // 반환 타입 Board[] 배열
+    getAllBoard(): Promise<Board[]> {
         return this.boardsService.getAllBoards();
     }
 
     // 특정 번호의 게시글 조회
     @Get('/:id')
-    getBoardById(@Param('id') id: number): Promise<Board>{
+    getBoardById(@Param('id') id: number): Promise<Board> {
         return this.boardsService.getBoardById(id);
     }
 
     // 특정 작성자의 게시글 조회
     @Get('/search/:keyword')
-    getBoardByAuthor(@Query('author') author: string): Promise<Board[]>{
+    getBoardByAuthor(@Query('author') author: string): Promise<Board[]> {
         return this.boardsService.getBoardByAuthor(author);
     }
 
@@ -44,13 +44,13 @@ export class BoardsController {
 
     // 특정 번호의 게시글의 일부 수정
     @Patch('/:id/status')
-    updateBoardStatusById(@Param('id') id: number, @Body('status', BoardStatusValidationPipe) status: BoardStatus) {
+    updateBoardStatusById(@Param('id') id: number, @Body('status', BoardStatusValidationPipe) status: BoardStatus): void {
         this.boardsService.updateBoardStatusById(id, status)
     } 
 
     // 특정 번호의 게시글의 전체 수정
     @Put('/:id')
-    updateBoardById(@Param('id') id: number, @Body() updateBoardDto: UpdateBoardDto) {
+    updateBoardById(@Param('id') id: number, @Body() updateBoardDto: UpdateBoardDto): void {
         this.boardsService.updateBoardById(id, updateBoardDto)
     } 
 }

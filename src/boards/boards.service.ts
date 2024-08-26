@@ -25,7 +25,7 @@ export class BoardsService {
         });
     
         return await this.boardsRepository.save(board);
-      }
+    }
 
     // 전체 게시글 조회
     async getAllBoards(): Promise<Board[]> {
