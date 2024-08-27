@@ -41,7 +41,7 @@ export class BoardsController {
         this.boardsService.deleteBoardById(id);
     }
 
-    // 특정 번호의 게시글의 일부 수정
+    // 특정 번호의 게시글의 일부 수정 // 커스텀 파이프 사용은 명시적으로 사용하는 것이 일반적
     @Patch('/:id/status')
     updateBoardStatusById(@Param('id') id: number, @Body('status', BoardStatusValidationPipe) status: BoardStatus): void {
         this.boardsService.updateBoardStatusById(id, status)
