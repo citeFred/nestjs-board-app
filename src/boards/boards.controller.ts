@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { Board } from './board.entity';
 import { CreateBoardDto } from './dto/create-board.dto';
