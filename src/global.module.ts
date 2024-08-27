@@ -9,6 +9,5 @@ import { APP_PIPE } from "@nestjs/core";
             useClass : ValidationPipe,
         },
     ],
-    exports :  [APP_PIPE],
 })
 export class GlobalModule {}
