@@ -13,7 +13,6 @@ export class BoardsController {
     
     // 게시글 작성 기능
     @Post('/') // PostMapping 핸들러 데코레이터
-    @UsePipes(ValidationPipe) // 핸들러 레벨 유효성 검사 파이프 설정
     createBoard(@Body() createBoardDto: CreateBoardDto): Promise<Board> {
         return this.boardsService.createBoard(createBoardDto)
     }
