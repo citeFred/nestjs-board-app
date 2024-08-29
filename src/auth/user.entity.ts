@@ -12,7 +12,7 @@ export class User {
     @Column()
     password: string;
 
-    @Column()
+    @Column({ unique: true }) // 이메일은 중복되지 않도록 한다.
     email: string;
 
     @Column()
