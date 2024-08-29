@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
@@ -18,9 +19,12 @@ export class AuthService {
         // 이메일 중복 확인
         await this.checkEmailExists(email);
 
+        // 비밀번호 해싱
+        const hashedPassword = await this.hashPassword(password);
+
         const user = this.usersRepository.create({
             username,
-            password,
+            password: hashedPassword, // 해싱된 비밀번호 사용
             email,
             role,
         });
@@ -34,6 +38,12 @@ export class AuthService {
         if (existingUser) {
             throw new ConflictException('Email already exists');
         }
+    }
+
+    // 비밀번호 해싱 암호화 메서드
+    private async hashPassword(password: string): Promise<string> {
+        const salt = await bcrypt.genSalt(); // 솔트 생성
+        return await bcrypt.hash(password, salt); // 비밀번호 해싱
     }
 }
 
