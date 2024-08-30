@@ -10,6 +10,6 @@ export class AuthController {
     // 회원 가입 기능
     @Post('/signup') // PostMapping 핸들러 데코레이터
     signup(@Body() createUserDto: CreateUserDto): Promise<User> {
-        return this.authService.createUser(createUserDto);
+        return this.authService.signup(createUserDto);
     }
 }

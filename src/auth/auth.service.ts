@@ -13,7 +13,7 @@ export class AuthService {
     ){}
 
     // 회원 가입
-    async createUser(createUserDto: CreateUserDto): Promise<User> {
+    async signup(createUserDto: CreateUserDto): Promise<User> {
         const { username, password, email, role } = createUserDto;
 
         // 이메일 중복 확인
@@ -30,6 +30,10 @@ export class AuthService {
         });
 
         return await this.usersRepository.save(user);
+    }
+
+    async signin() {
+        
     }
 
     // 이메일 중복 확인 메서드
