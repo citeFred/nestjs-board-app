@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
@@ -16,7 +17,7 @@ export class AuthController {
 
     // 로그인 기능
     @Post('/signin')
-    signIn(@Body() loginUserDto: LoginUserDto) {
-        return this.authService.signIn(loginUserDto);
+    signIn(@Body() loginUserDto: LoginUserDto, @Res() res: Response) {
+        return this.authService.signIn(loginUserDto, res);
     }
 }

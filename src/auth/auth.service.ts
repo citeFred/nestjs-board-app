@@ -1,4 +1,5 @@
-import { ConflictException, Injectable, UnauthorizedException, Logger } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException, Logger, Res } from '@nestjs/common';
+import { Response, Request } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -38,7 +39,7 @@ export class AuthService {
     }
 
     // 로그인
-    async signIn(loginUserDto: LoginUserDto): Promise<{ accessToken: string }> {
+    async signIn(loginUserDto: LoginUserDto, @Res() res: Response): Promise<void> {
         const { email, password } = loginUserDto;
 
         try {
@@ -55,7 +56,15 @@ export class AuthService {
              };
             const accessToken = await this.jwtService.sign(payload);
 
-            return { accessToken };
+            // JWT를 쿠키에 저장
+            res.cookie('Authorization', accessToken, {
+                httpOnly: true, // 클라이언트 측 스크립트에서 쿠키 접근 금지
+                secure: false, // HTTPS에서만 쿠키 전송, 임시 비활성화
+                maxAge: 3600000, // 1시간
+                sameSite: 'none', // CSRF 공격 방어
+            });
+
+            res.send({ message: 'Logged in successfully' });
         } catch (error) {
             this.logger.error('Signin failed', error.stack);
             throw error;
