@@ -1,16 +1,20 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
 import { LoginUserDto } from './dto/login-user.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+    private readonly logger = new Logger(AuthService.name);
+
     constructor(
         @InjectRepository(User)
-        private usersRepository: Repository<User>
+        private usersRepository: Repository<User>,
+        private jwtService: JwtService
     ){}
 
     // 회원 가입
@@ -34,16 +38,28 @@ export class AuthService {
     }
 
     // 로그인
-    async signIn(loginUserDto: LoginUserDto): Promise<string> {
+    async signIn(loginUserDto: LoginUserDto): Promise<{ accessToken: string }> {
         const { email, password } = loginUserDto;
 
-        const existingUser = await this.findUserByEmail(email);
+        try {
+            const existingUser = await this.findUserByEmail(email);
 
-        if (!existingUser || !(await bcrypt.compare(password, existingUser.password))) {
-            throw new UnauthorizedException('Incorrect email or password.');
+            if (!existingUser || !(await bcrypt.compare(password, existingUser.password))) {
+                throw new UnauthorizedException('Incorrect email or password.');
+            }
+            // JWT 토큰 생성 (Secret + Payload)
+            const payload = { 
+                email: existingUser.email,
+                username: existingUser.username,
+                role: existingUser.role
+             };
+            const accessToken = await this.jwtService.sign(payload);
+
+            return { accessToken };
+        } catch (error) {
+            this.logger.error('Signin failed', error.stack);
+            throw error;
         }
-
-        return 'login success';
     }
 
     // 이메일 중복 확인 메서드
