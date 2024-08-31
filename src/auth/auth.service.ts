@@ -48,7 +48,7 @@ export class AuthService {
             if (!existingUser || !(await bcrypt.compare(password, existingUser.password))) {
                 throw new UnauthorizedException('Incorrect email or password.');
             }
-            // JWT 토큰 생성 (Secret + Payload)
+            // [1] JWT 토큰 생성 (Secret + Payload)
             const payload = { 
                 email: existingUser.email,
                 username: existingUser.username,
@@ -56,7 +56,7 @@ export class AuthService {
              };
             const accessToken = await this.jwtService.sign(payload);
 
-            // JWT를 쿠키에 저장
+            // [2] JWT를 쿠키에 저장 및 response에 쿠키 담기
             res.cookie('Authorization', accessToken, {
                 httpOnly: true, // 클라이언트 측 스크립트에서 쿠키 접근 금지
                 secure: false, // HTTPS에서만 쿠키 전송, 임시 비활성화
