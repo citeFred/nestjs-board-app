@@ -9,6 +9,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/custom-role.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { UserRole } from 'src/auth/user-role.enum';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/auth/user.entity';
 
 @Controller('api/boards')
 @UseGuards(AuthGuard('jwt'), RolesGuard) // JWT 인증과 role 커스텀 가드를 적용
@@ -19,8 +21,8 @@ export class BoardsController {
     // 게시글 작성 기능
     @Post('/') // PostMapping 핸들러 데코레이터
     @Roles(UserRole.USER) // User만 게시글 작성 가능
-    createBoard(@Body() createBoardDto: CreateBoardDto): Promise<Board> {
-        return this.boardsService.createBoard(createBoardDto)
+    createBoard(@Body() createBoardDto: CreateBoardDto, @GetUser() user: User): Promise<Board> {
+        return this.boardsService.createBoard(createBoardDto, user)
     }
 
     // 게시글 조회 기능
