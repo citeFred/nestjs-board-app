@@ -43,7 +43,7 @@ export class BoardsController {
 
     // 특정 번호의 게시글 삭제
     @Delete('/:id')
-    @Roles(UserRole.ADMIN) // ADMIN만 게시글 삭제 가능
+    @Roles(UserRole.ADMIN, UserRole.USER) // ADMIN, USER만 게시글 삭제 가능
     deleteBoardById(@Param('id') id: number): void {
         this.boardsService.deleteBoardById(id);
     }
