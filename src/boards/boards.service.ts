@@ -34,6 +34,13 @@ export class BoardsService {
         return await this.boardsRepository.find();
     }
 
+    // 나의 게시글 조회
+    async getMyAllBoards(user: User): Promise<Board[]> {
+        return this.boardsRepository.createQueryBuilder('board')
+            .where('board.userId = :userId', { userId : user.id })
+            .getMany();
+    }
+
     // 특정 번호의 게시글 조회
     async getBoardById(id: number): Promise<Board>{
         const foundBoard = await this.boardsRepository.findOneBy({id});
@@ -44,7 +51,7 @@ export class BoardsService {
     }
 
     // 특정 작성자의 게시글 조회
-    async getBoardByAuthor(author: string): Promise<Board[]>{
+    async getBoardsByAuthor(author: string): Promise<Board[]>{
         const foundBoards = await this.boardsRepository.findBy({author});
         if (foundBoards.length === 0) {
             throw new NotFoundException(`No boards found for author ${author}`);

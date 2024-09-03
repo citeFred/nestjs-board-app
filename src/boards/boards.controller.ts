@@ -27,8 +27,14 @@ export class BoardsController {
 
     // 게시글 조회 기능
     @Get('/') // GetMapping 핸들러 데코레이터
-    getAllBoard(): Promise<Board[]> {
+    getAllBoards(): Promise<Board[]> {
         return this.boardsService.getAllBoards();
+    }
+
+    // 나의 게시글 조회 기능
+    @Get('/myboards') // GetMapping 핸들러 데코레이터
+    getMyAllBoards(@GetUser() user: User): Promise<Board[]> {
+        return this.boardsService.getMyAllBoards(user);
     }
 
     // 특정 번호의 게시글 조회
@@ -39,8 +45,8 @@ export class BoardsController {
 
     // 특정 작성자의 게시글 조회
     @Get('/search/:keyword')
-    getBoardByAuthor(@Query('author') author: string): Promise<Board[]> {
-        return this.boardsService.getBoardByAuthor(author);
+    getBoardsByAuthor(@Query('author') author: string): Promise<Board[]> {
+        return this.boardsService.getBoardsByAuthor(author);
     }
 
     // 특정 번호의 게시글 삭제
