@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { Board } from './board.entity';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -51,15 +51,16 @@ export class BoardsController {
 
     // 특정 번호의 게시글 삭제
     @Delete('/:id')
-    @Roles(UserRole.ADMIN, UserRole.USER) // ADMIN, USER만 게시글 삭제 가능
-    deleteBoardById(@Param('id') id: number): void {
-        this.boardsService.deleteBoardById(id);
+    @Roles(UserRole.USER) // USER만 게시글 삭제 가능
+    deleteBoardById(@Param('id') id: number, @GetUser() user: User): void {
+        this.boardsService.deleteBoardById(id, user);
     }
 
-    // 특정 번호의 게시글의 일부 수정 // 커스텀 파이프 사용은 명시적으로 사용하는 것이 일반적
+    // 특정 번호의 게시글의 일부 수정 (관리자가 부적절한 글을 비공개로 설정) // 커스텀 파이프 사용은 명시적으로 사용하는 것이 일반적
     @Patch('/:id/status')
-    updateBoardStatusById(@Param('id') id: number, @Body('status', BoardStatusValidationPipe) status: BoardStatus): void {
-        this.boardsService.updateBoardStatusById(id, status)
+    @Roles(UserRole.ADMIN)
+    updateBoardStatusById(@Param('id') id: number, @Body('status', BoardStatusValidationPipe) status: BoardStatus, @GetUser() user: User): void {
+        this.boardsService.updateBoardStatusById(id, status, user)
     } 
 
     // 특정 번호의 게시글의 전체 수정
