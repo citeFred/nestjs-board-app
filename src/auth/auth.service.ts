@@ -1,5 +1,4 @@
 import { ConflictException, Injectable, UnauthorizedException, Logger, Res } from '@nestjs/common';
-import { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from "src/user/user.entity";
 import { Repository } from 'typeorm';
@@ -36,11 +35,16 @@ export class AuthService {
             role,
         });
 
-        return await this.usersRepository.save(user);
+        const savedUser = await this.usersRepository.save(user);
+
+        this.logger.verbose(`User signed up successfully with email: ${email}`);
+        this.logger.debug(`User details: ${JSON.stringify(savedUser)}`);
+
+        return savedUser;
     }
 
     // 로그인
-    async signIn(signInRequestDto: SignInRequestDto, @Res() res: Response): Promise<void> {
+    async signIn(signInRequestDto: SignInRequestDto): Promise<{ accessToken: string, user: User }> {
         const { email, password } = signInRequestDto;
         this.logger.verbose(`Attempting to sign in user with email: ${email}`);
 
@@ -58,17 +62,12 @@ export class AuthService {
                 role: existingUser.role
              };
             const accessToken = await this.jwtService.sign(payload);
-
-            // [2] JWT를 쿠키에 저장 및 response에 쿠키 담기
-            res.cookie('Authorization', accessToken, {
-                httpOnly: true, // 클라이언트 측 스크립트에서 쿠키 접근 금지
-                secure: false, // HTTPS에서만 쿠키 전송, 임시 비활성화
-                maxAge: 3600000, // 1시간
-                sameSite: 'none', // CSRF 공격 방어
-            });
-
             this.logger.verbose(`User signed in successfully with email: ${email}`);
-            res.send({ message: 'Logged in successfully' });
+            this.logger.debug(`Generated JWT Token: ${accessToken}`);
+            this.logger.debug(`User details: ${JSON.stringify(existingUser)}`);
+
+            // [2] 사용자 정보 반환
+            return { accessToken, user: existingUser };
         } catch (error) {
             this.logger.error('Signin failed', error.stack);
             throw error;
@@ -100,4 +99,3 @@ export class AuthService {
         return await bcrypt.hash(password, salt); // 비밀번호 해싱
     }
 }
-
