@@ -1,12 +1,10 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Article } from "src/article/article.entity";
 import { UserRole } from "./user-role.enum";
+import { BaseEntity } from "src/common/base.entity";
 
 @Entity()
-export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class User extends BaseEntity{
     @Column()
     username: string;
 
