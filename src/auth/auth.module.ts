@@ -16,8 +16,8 @@ dotenv.config();
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions:{
-        expiresIn: process.env.JWT_EXPIRATION,
-      }
+        expiresIn: parseInt(process.env.JWT_EXPIRATION, 10)
+      }  
     }),
     TypeOrmModule.forFeature([User])
   ],
