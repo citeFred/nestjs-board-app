@@ -2,7 +2,7 @@ import { Body, Controller, Logger, Post, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignUpRequestDto } from './dto/sign-up-request.dto';
-import { User } from './user.entity';
+import { User } from "src/user/user.entity";
 import { SignInRequestDto } from './dto/sign-in-request.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './get-user.decorator';

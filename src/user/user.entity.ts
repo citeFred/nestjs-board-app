@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { UserRole } from "./user-role.enum";
 import { Article } from "src/article/article.entity";
+import { UserRole } from "./user-role.enum";
 
 @Entity()
 export class User {

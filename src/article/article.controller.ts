@@ -8,9 +8,9 @@ import { ArticleStatusValidationPipe } from './pipes/article-status-validation.p
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/custom-role.guard';
 import { Roles } from 'src/auth/roles.decorator';
-import { UserRole } from 'src/auth/user-role.enum';
+import { UserRole } from 'src/user/user-role.enum';
 import { GetUser } from 'src/auth/get-user.decorator';
-import { User } from 'src/auth/user.entity';
+import { User } from "src/user/user.entity";
 
 @Controller('api/articles')
 @UseGuards(AuthGuard('jwt'), RolesGuard) // JWT 인증과 role 커스텀 가드를 적용
