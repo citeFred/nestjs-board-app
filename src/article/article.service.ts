@@ -14,21 +14,21 @@ export class ArticleService {
 
     constructor(
         @InjectRepository(Article)
-        private ArticleRepository: Repository<Article>
+        private articleRepository: Repository<Article>
     ){}
         
     // 게시글 작성
     async createArticle(createArticleRequestDto: CreateArticleRequestDto, user: User): Promise<Article> {
         this.logger.verbose(`User ${user.username} is creating a new Article with title: ${createArticleRequestDto.title}`);
         const { title, contents } = createArticleRequestDto;
-        const Article = this.ArticleRepository.create({
+        const Article = this.articleRepository.create({
           author: user.username,
           title,
           contents,
           status: ArticleStatus.PUBLIC,
           user,
         });
-        const savedArticle = await this.ArticleRepository.save(Article);
+        const savedArticle = await this.articleRepository.save(Article);
         this.logger.verbose(`Article created successfully: ${JSON.stringify(savedArticle)}`);
         return savedArticle;
     }
@@ -36,7 +36,7 @@ export class ArticleService {
     // 전체 게시글 조회
     async getAllArticles(): Promise<Article[]> {
         this.logger.verbose('Retrieving all Article');
-        const articles = await this.ArticleRepository.find();
+        const articles = await this.articleRepository.find();
         this.logger.verbose(`All articles retrieved successfully: ${JSON.stringify(articles)}`);
         return articles;
     }
@@ -44,17 +44,17 @@ export class ArticleService {
     // 나의 게시글 조회
     async getMyAllArticles(user: User): Promise<Article[]> {
         this.logger.verbose(`User ${user.username} is retrieving their own Articles`);
-        const articles = await this.ArticleRepository.createQueryBuilder('Article')
-            .where('Article.userId = :userId', { userId : user.id })
-            .getMany();
+        const articles = await this.articleRepository.createQueryBuilder('article')
+            .where('article.userId = :userId', { userId : user.id }) 
+            .getMany(); 
         this.logger.verbose(`User ${user.username} retrieved their own Articles: ${JSON.stringify(articles)}`);
-        return articles;
+        return articles; 
     }
 
     // 특정 번호의 게시글 조회
     async getArticleById(id: number): Promise<Article> {
         this.logger.verbose(`Retrieving Article with ID ${id}`);
-        const foundArticle = await this.ArticleRepository.findOneBy({id});
+        const foundArticle = await this.articleRepository.findOneBy({id});
         if (!foundArticle) {
             this.logger.warn(`Article with ID ${id} not found`);
             throw new NotFoundException(`Article with ID ${id} not found`);
@@ -66,7 +66,7 @@ export class ArticleService {
     // 특정 작성자의 게시글 조회
     async getArticlesByAuthor(author: string): Promise<Article[]> {
         this.logger.verbose(`Retrieving Articles by author: ${author}`);
-        const foundArticles = await this.ArticleRepository.findBy({author});
+        const foundArticles = await this.articleRepository.findBy({author});
         if (foundArticles.length === 0) {
             this.logger.warn(`No Articles found for author ${author}`);
             throw new NotFoundException(`No Articles found for author ${author}`);
@@ -83,7 +83,7 @@ export class ArticleService {
             this.logger.warn(`User ${user.username} attempted to delete Article ID ${id} without permission`);
             throw new UnauthorizedException(`You do not have permission to delete this Article`);
         }
-        await this.ArticleRepository.remove(foundArticle);
+        await this.articleRepository.remove(foundArticle);
         this.logger.verbose(`Article with ID ${id} deleted by User ${user.username}`);
     }
 
@@ -91,7 +91,7 @@ export class ArticleService {
     async updateArticleStatusById(id: number, status: ArticleStatus, user: User): Promise<void> {
         this.logger.verbose(`User ${user.username} is attempting to update the status of Article with ID ${id} to ${status}`);
         if (user.role === UserRole.ADMIN) {
-            const result = await this.ArticleRepository.update(id, { status });
+            const result = await this.articleRepository.update(id, { status });
             if (result.affected === 0) {
                 this.logger.warn(`No Article found to update with ID ${id}`);
                 throw new NotFoundException(`There's no updated record or Article with ID ${id} not found`);
@@ -115,7 +115,7 @@ export class ArticleService {
         foundArticle.contents = contents;
         foundArticle.status = status;
     
-        await this.ArticleRepository.save(foundArticle);
+        await this.articleRepository.save(foundArticle);
         this.logger.verbose(`Article with ID ${id} updated successfully: ${JSON.stringify(foundArticle)}`);
     }
 }
