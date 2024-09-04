@@ -1,5 +1,5 @@
-import { Body, Controller, Logger, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { Response, Request } from 'express';
+import { Body, Controller, Logger, Post, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignUpRequestDto } from './dto/sign-up-request.dto';
 import { User } from './user.entity';

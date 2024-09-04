@@ -1,4 +1,4 @@
-import { IsAlphanumeric, IsEmail, IsEnum, IsNotEmpty, Matches, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, Matches, MaxLength, MinLength } from "class-validator";
 import { UserRole } from "../user-role.enum";
 
 export class SignUpRequestDto {

@@ -1,5 +1,5 @@
 import { ConflictException, Injectable, UnauthorizedException, Logger, Res } from '@nestjs/common';
-import { Response, Request } from 'express';
+import { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
