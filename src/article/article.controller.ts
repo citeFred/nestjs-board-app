@@ -12,7 +12,7 @@ import { UserRole } from 'src/auth/user-role.enum';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 
-@Controller('api/Articles')
+@Controller('api/articles')
 @UseGuards(AuthGuard('jwt'), RolesGuard) // JWT 인증과 role 커스텀 가드를 적용
 export class ArticleController {
     private readonly logger = new Logger(ArticleController.name); // Logger 인스턴스 생성
@@ -36,7 +36,7 @@ export class ArticleController {
     }
 
     // 나의 게시글 조회 기능
-    @Get('/myArticles') // GetMapping 핸들러 데코레이터
+    @Get('/myarticles') // GetMapping 핸들러 데코레이터
     getMyAllArticles(@GetUser() user: User): Promise<Article[]> {
         this.logger.verbose(`User ${user.username} retrieving their Articles`);
         return this.ArticleService.getMyAllArticles(user);
