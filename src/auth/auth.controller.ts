@@ -1,9 +1,9 @@
 import { Body, Controller, Logger, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { SignUpRequestDto } from './dto/sign-up-request.dto';
 import { User } from './user.entity';
-import { LoginUserDto } from './dto/login-user.dto';
+import { SignInRequestDto } from './dto/sign-in-request.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './get-user.decorator';
 
@@ -15,16 +15,16 @@ export class AuthController {
 
     // 회원 가입 기능
     @Post('/signup') // PostMapping 핸들러 데코레이터
-    signUp(@Body() createUserDto: CreateUserDto): Promise<User> {
-        this.logger.verbose(`Attempting to sign up user with email: ${createUserDto.email}`);
-        return this.authService.signUp(createUserDto);
+    signUp(@Body() signUpRequestDto: SignUpRequestDto): Promise<User> {
+        this.logger.verbose(`Attempting to sign up user with email: ${signUpRequestDto.email}`);
+        return this.authService.signUp(signUpRequestDto);
     }
 
     // 로그인 기능
     @Post('/signin')
-    signIn(@Body() loginUserDto: LoginUserDto, @Res() res: Response) {
-        this.logger.verbose(`Attempting to sign in user with email: ${loginUserDto.email}`);
-        return this.authService.signIn(loginUserDto, res);
+    signIn(@Body() signInRequestDto: SignInRequestDto, @Res() res: Response) {
+        this.logger.verbose(`Attempting to sign in user with email: ${signInRequestDto.email}`);
+        return this.authService.signIn(signInRequestDto, res);
     }
 
     // 인증된 회원이 들어갈 수 있는 테스트 URL 경로

@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { Board } from './board.entity';
-import { CreateBoardDto } from './dto/create-board.dto';
+import { CreateBoardRequestDto } from './dto/create-board-request.dto';
 import { BoardStatus } from './board-status.enum';
-import { UpdateBoardDto } from './dto/update-board.dto';
+import { UpdateBoardRequestDto } from './dto/update-board-request.dto';
 import { BoardStatusValidationPipe } from './pipes/board-status-validation.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/custom-role.guard';
@@ -23,9 +23,9 @@ export class BoardsController {
     // 게시글 작성 기능
     @Post('/') // PostMapping 핸들러 데코레이터
     @Roles(UserRole.USER) // User만 게시글 작성 가능
-    createBoard(@Body() createBoardDto: CreateBoardDto, @GetUser() user: User): Promise<Board> {
-        this.logger.verbose(`User ${user.username} creating a new board. Data: ${JSON.stringify(createBoardDto)}`);
-        return this.boardsService.createBoard(createBoardDto, user)
+    createBoard(@Body() createBoardRequestDto: CreateBoardRequestDto, @GetUser() user: User): Promise<Board> {
+        this.logger.verbose(`User ${user.username} creating a new board. Data: ${JSON.stringify(createBoardRequestDto)}`);
+        return this.boardsService.createBoard(createBoardRequestDto, user)
     }
 
     // 게시글 조회 기능
@@ -74,8 +74,8 @@ export class BoardsController {
 
     // 특정 번호의 게시글의 전체 수정
     @Put('/:id')
-    updateBoardById(@Param('id') id: number, @Body() updateBoardDto: UpdateBoardDto): void {
+    updateBoardById(@Param('id') id: number, @Body() updateBoardRequestDto: UpdateBoardRequestDto): void {
         this.logger.verbose(`Updating board with ID ${id}`);
-        this.boardsService.updateBoardById(id, updateBoardDto)
+        this.boardsService.updateBoardById(id, updateBoardRequestDto)
     } 
 }

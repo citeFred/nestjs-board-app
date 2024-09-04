@@ -3,9 +3,9 @@ import { Response, Request } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
+import { SignUpRequestDto } from './dto/sign-up-request.dto';
 import * as bcrypt from 'bcryptjs';
-import { LoginUserDto } from './dto/login-user.dto';
+import { SignInRequestDto } from './dto/sign-in-request.dto';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -19,8 +19,8 @@ export class AuthService {
     ){}
 
     // 회원 가입
-    async signUp(createUserDto: CreateUserDto): Promise<User> {
-        const { username, password, email, role } = createUserDto;
+    async signUp(signUpRequestDto: SignUpRequestDto): Promise<User> {
+        const { username, password, email, role } = signUpRequestDto;
         this.logger.verbose(`Attempting to sign up user with email: ${email}`);
 
         // 이메일 중복 확인
@@ -40,8 +40,8 @@ export class AuthService {
     }
 
     // 로그인
-    async signIn(loginUserDto: LoginUserDto, @Res() res: Response): Promise<void> {
-        const { email, password } = loginUserDto;
+    async signIn(signInRequestDto: SignInRequestDto, @Res() res: Response): Promise<void> {
+        const { email, password } = signInRequestDto;
         this.logger.verbose(`Attempting to sign in user with email: ${email}`);
 
         try {

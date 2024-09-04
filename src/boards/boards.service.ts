@@ -3,8 +3,8 @@ import { Board } from './board.entity';
 import { BoardStatus } from "./board-status.enum";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UpdateBoardDto } from './dto/update-board.dto';
-import { CreateBoardDto } from './dto/create-board.dto';
+import { UpdateBoardRequestDto } from './dto/update-board-request.dto';
+import { CreateBoardRequestDto } from './dto/create-board-request.dto';
 import { User } from 'src/auth/user.entity';
 import { UserRole } from 'src/auth/user-role.enum';
 
@@ -18,10 +18,10 @@ export class BoardsService {
     ){}
         
     // 게시글 작성
-    async createBoard(createBoardDto: CreateBoardDto, user: User): Promise<Board> {
-        this.logger.verbose(`User ${user.username} is creating a new board with title: ${createBoardDto.title}`);
+    async createBoard(createBoardRequestDto: CreateBoardRequestDto, user: User): Promise<Board> {
+        this.logger.verbose(`User ${user.username} is creating a new board with title: ${createBoardRequestDto.title}`);
 
-        const { title, contents } = createBoardDto;
+        const { title, contents } = createBoardRequestDto;
         
         const board = this.boardsRepository.create({
           author: user.username,
@@ -103,11 +103,11 @@ export class BoardsService {
     }
 
     // 특정 번호의 게시글의 전체 수정
-    async updateBoardById(id: number, updateBoardDto: UpdateBoardDto): Promise<void> {
+    async updateBoardById(id: number, updateBoardRequestDto: UpdateBoardRequestDto): Promise<void> {
         this.logger.verbose(`Attempting to update board with ID ${id}`);
 
         const foundBoard = await this.getBoardById(id); // 게시글 조회
-        const { author, title, contents, status } = updateBoardDto; // DTO에서 데이터 추출
+        const { author, title, contents, status } = updateBoardRequestDto; // DTO에서 데이터 추출
     
         // 게시글 속성 업데이트
         foundBoard.author = author;
