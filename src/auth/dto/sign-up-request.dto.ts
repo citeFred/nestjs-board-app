@@ -22,4 +22,15 @@ export class SignUpRequestDto {
     @IsNotEmpty()
     @IsEnum(UserRole) // 열거형 UserRole에 포함된 상태만 허용, USER / ADMIN
     role: UserRole;
+
+    @IsNotEmpty()
+    @Matches(/^\d{5}$/, { message: 'Postal code must be 5 digits' }) // 우편번호는 5자리 숫자
+    postalCode: string;
+
+    @IsNotEmpty()
+    @MaxLength(100) // 주소는 최대 100자
+    address: string;
+
+    @MaxLength(100, { message: 'Detail address is too long' }) // 상세 주소는 선택적으로 최대 100자
+    detailAddress: string;
 }
