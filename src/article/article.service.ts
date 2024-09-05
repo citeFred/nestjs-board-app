@@ -41,6 +41,20 @@ export class ArticleService {
         return articles;
     }
 
+    // 페이징 추가 게시글 조회 기능
+    async getPaginatedArticles(page: number, limit: number): Promise<Article[]> {
+        this.logger.verbose(`Retrieving paginated articles: page ${page}, limit ${limit}`);
+        const skip: number = (page - 1) * limit;
+        const articles = await this.articleRepository.find({
+            skip,
+            take: limit,
+            order: { createdAt: 'DESC' } // 내림차순
+        });
+        this.logger.verbose(`Paginated articles retrieved successfully`);
+        return articles;
+    }
+    
+
     // 나의 게시글 조회
     async getMyAllArticles(user: User): Promise<Article[]> {
         this.logger.verbose(`User ${user.username} is retrieving their own Articles`);

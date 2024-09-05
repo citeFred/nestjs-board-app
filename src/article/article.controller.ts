@@ -43,6 +43,16 @@ export class ArticleController {
         return new ApiResponse(true, 200, 'All articles retrieved successfully', articleDtos);
     }
 
+    // 페이징 처리된 게시글 조회
+    @Get('/paginated')
+    async getPaginatedArticles( @Query('page') page: number = 1, @Query('limit') limit: number = 10 ): Promise<ApiResponse<ArticleResponseDto[]>> {
+        this.logger.verbose(`Retrieving paginated articles: page ${page}, limit ${limit}`);
+        const articles = await this.articleService.getPaginatedArticles(page, limit);
+        const articleDtos = articles.map(article => new ArticleResponseDto(article));
+        this.logger.verbose(`Paginated articles retrieved successfully`);
+        return new ApiResponse(true, 200, 'Paginated articles retrieved successfully', articleDtos);
+    }
+
     // 나의 게시글 조회 기능
     @Get('/myarticles')
     async getMyAllArticles(@GetUser() user: User): Promise<ApiResponse<ArticleResponseDto[]>> {
