@@ -11,11 +11,4 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       callbackURL: process.env.KAKAO_CALLBACK_URL,
     });
   }
-
-  async validate(accessToken: string, refreshToken: string, profile: any): Promise<any> {
-    const kakaoAccount = profile._json.kakao_account;
-    const kakaoId = kakaoAccount.id;
-    const kakaoUsername = kakaoAccount.name; // 'name'. 'displayName', 'nickName' 등 사용시 수정 필요
-    return await this.authService.validateKakaoUser(kakaoId, kakaoUsername);
-  }
 }
