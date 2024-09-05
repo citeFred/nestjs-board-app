@@ -19,7 +19,7 @@ export class AuthService {
 
     // 회원 가입
     async signUp(signUpRequestDto: SignUpRequestDto): Promise<User> {
-        const { username, password, email, role } = signUpRequestDto;
+        const { username, password, email, role, postalCode, address, detailAddress } = signUpRequestDto;
         this.logger.verbose(`Attempting to sign up user with email: ${email}`);
 
         // 이메일 중복 확인
@@ -33,6 +33,9 @@ export class AuthService {
             password: hashedPassword, // 해싱된 비밀번호 사용
             email,
             role,
+            postalCode,
+            address,
+            detailAddress,
         });
 
         const savedUser = await this.usersRepository.save(user);
