@@ -14,7 +14,7 @@ export class User extends BaseEntity{
     @Column({ unique: true }) // 이메일은 중복되지 않도록 한다.
     email: string;
 
-    @Column()
+    @Column({ default: UserRole.USER })
     role: UserRole;
 
     @Column({ nullable: true })
