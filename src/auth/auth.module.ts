@@ -7,6 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import * as dotenv from 'dotenv';
 import { JwtStrategy } from './jwt.strategy';
+import { HttpModule } from '@nestjs/axios';
+import { KakaoStrategy } from './kakao.strategy';
 
 dotenv.config();
 
@@ -19,10 +21,11 @@ dotenv.config();
         expiresIn: parseInt(process.env.JWT_EXPIRATION, 10)
       }  
     }),
-    TypeOrmModule.forFeature([User])
+    TypeOrmModule.forFeature([User]),
+    HttpModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, KakaoStrategy],
   exports: [JwtModule, PassportModule],
 })
 export class AuthModule {}
