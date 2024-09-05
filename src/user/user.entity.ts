@@ -17,6 +17,15 @@ export class User extends BaseEntity{
     @Column()
     role: UserRole;
 
+    @Column({ nullable: true })
+    postalCode: string;
+
+    @Column({ nullable: true })
+    address: string;
+
+    @Column({ nullable: true })
+    detailAddress: string;
+
     @OneToMany(Type => Article, article => article.author, { eager: false })
     articles: Article[];
 }
