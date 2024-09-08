@@ -15,7 +15,7 @@ import { ApiResponse } from 'src/common/api-response.dto';
 import { ArticleResponseDto } from './dto/article-response.dto';
 
 @Controller('api/articles')
-@UseGuards(AuthGuard('jwt'), RolesGuard) // JWT 인증과 role 커스텀 가드를 적용
+// @UseGuards(AuthGuard('jwt'), RolesGuard) // JWT 인증과 role 커스텀 가드를 적용 // 프론트엔드 기본 요청이 안되어 잠시 인증인가 주석처리
 export class ArticleController {
     private readonly logger = new Logger(ArticleController.name); // Logger 인스턴스 생성
 
