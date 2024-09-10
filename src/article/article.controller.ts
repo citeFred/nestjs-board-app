@@ -15,7 +15,7 @@ import { ApiResponse } from 'src/common/api-response.dto';
 import { ArticleResponseDto } from './dto/article-response.dto';
 
 @Controller('api/articles')
-// @UseGuards(AuthGuard('jwt'), RolesGuard) // JWT 인증과 role 커스텀 가드를 적용
+@UseGuards(AuthGuard('jwt'), RolesGuard) // JWT 인증과 role 커스텀 가드를 적용
 export class ArticleController {
     private readonly logger = new Logger(ArticleController.name); // Logger 인스턴스 생성
 
@@ -35,6 +35,7 @@ export class ArticleController {
 
     // 전체 게시글 조회 기능
     @Get('/')
+    @Roles(UserRole.USER)
     async getAllArticles(): Promise<ApiResponse<ArticleResponseDto[]>> {
         this.logger.verbose('Retrieving all Articles');
         const articles = await this.articleService.getAllArticles();
