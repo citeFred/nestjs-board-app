@@ -2,6 +2,7 @@ import { Article } from "src/article/article.entity";
 import { BaseEntity } from "src/common/base.entity";
 import { User } from "src/user/user.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
+import { FileType } from "./file-type.enum";
 
 @Entity()
 export class File extends BaseEntity {
@@ -16,6 +17,9 @@ export class File extends BaseEntity {
   
     @Column()
     size: number;
+
+    @Column()
+    fileType: FileType;
 
     @ManyToOne(() => User, user => user.files, { eager: false })
     user: User;
