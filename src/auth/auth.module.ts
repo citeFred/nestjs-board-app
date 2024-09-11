@@ -9,6 +9,7 @@ import * as dotenv from 'dotenv';
 import { JwtStrategy } from './jwt.strategy';
 import { HttpModule } from '@nestjs/axios';
 import { KakaoStrategy } from './kakao.strategy';
+import { FileModule } from 'src/file/file.module';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ dotenv.config();
     }),
     TypeOrmModule.forFeature([User]),
     HttpModule,
+    FileModule
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, KakaoStrategy],

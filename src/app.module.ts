@@ -14,6 +14,7 @@ import { FileModule } from './file/file.module';
     ArticleModule,
     AuthModule,
     UserModule,
-    FileModule],
+    FileModule
+  ],
 })
 export class AppModule {}
