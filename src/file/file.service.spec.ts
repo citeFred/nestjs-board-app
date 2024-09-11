@@ -14,25 +14,27 @@ describe('FileService', () => {
 
     service = module.get<FileService>(FileService);
     service['uploadPath'] = uploadPath;  // 경로 설정
-
-    // 업로드 디렉토리가 존재하지 않을 경우 생성
-    await fs.mkdir(uploadPath, { recursive: true });
   });
 
-//   afterEach(async () => {
-//     // 테스트 후 생성된 파일 삭제
-//     try {
-//       const files = await fs.readdir(uploadPath);
-//       for (const file of files) {
-//         await fs.unlink(path.join(uploadPath, file));
-//       }
-//     } catch (err) {
-//       // 파일 삭제 중 오류가 발생하면 무시
-//       console.error('Failed to clean up files:', err);
-//     }
-//   });
+  afterEach(async () => {
+    // 테스트 후 생성된 파일 삭제
+    try {
+      const files = await fs.readdir(uploadPath);
+      for (const file of files) {
+        await fs.unlink(path.join(uploadPath, file));
+      }
+    } catch (err) {
+      // 파일 삭제 중 오류가 발생하면 무시
+      console.error('Failed to clean up files:', err);
+    }
+  });
 
   describe('uploadFile', () => {
+    beforeEach(async () => {
+      // 업로드 디렉토리가 존재하지 않을 경우 생성
+      await fs.mkdir(uploadPath, { recursive: true });
+    });
+
     it('should upload a file successfully', async () => {
       // Given: 실제 파일 데이터를 준비
       const mockFile: Express.Multer.File = {
@@ -82,6 +84,28 @@ describe('FileService', () => {
       // When: 파일 업로드가 실패할 때
       // Then: 오류가 발생하는지 확인
       await expect(service.uploadFile(mockFile)).rejects.toThrow('Failed to upload file');
+    });
+  });
+
+  describe('ensureUploadPathExists', () => {
+    it('should create upload directory if it does not exist', async () => {
+      // Given: 업로드 경로가 존재하지 않도록 Mock 설정
+      jest.spyOn(fs, 'mkdir').mockResolvedValue(undefined);
+
+      // When: ensureUploadPathExists 메서드를 호출
+      await service.ensureUploadPathExists();
+
+      // Then: mkdir가 호출되었는지 확인
+      expect(fs.mkdir).toHaveBeenCalledWith(uploadPath, { recursive: true });
+    });
+
+    it('should throw an error if directory creation fails', async () => {
+      // Given: 업로드 경로 생성 실패 시나리오
+      jest.spyOn(fs, 'mkdir').mockRejectedValue(new Error('Failed to create directory'));
+
+      // When: ensureUploadPathExists 메서드를 호출
+      // Then: 오류가 발생하는지 확인
+      await expect(service.ensureUploadPathExists()).rejects.toThrow('Failed to create upload directory');
     });
   });
 });
