@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Query, Req, Res, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignUpRequestDto } from './dto/sign-up-request.dto';
@@ -8,18 +8,27 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './get-user.decorator';
 import { UserResponseDto } from './dto/user-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
+import { ProfileService } from 'src/file/profile-file.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+
 
 @Controller('api/auth')
 export class AuthController {
-    private readonly logger = new Logger(AuthController.name); // Logger 인스턴스 생성
+    private readonly logger = new Logger(AuthController.name); // Logger 인스턴스
 
-    constructor(private authService: AuthService){}
+    constructor(private authService: AuthService, private profileService: ProfileService){}
 
     // 회원 가입 기능
     @Post('/signup')
-    async signUp(@Body() signUpRequestDto: SignUpRequestDto): Promise<ApiResponse<UserResponseDto>> {
+    @UseInterceptors(FileInterceptor('profilePicture'))
+    async signUp(@Body() signUpRequestDto: SignUpRequestDto, @UploadedFile() file: Express.Multer.File): Promise<ApiResponse<UserResponseDto>> {
         this.logger.verbose(`Attempting to sign up user with email: ${signUpRequestDto.email}`);
         const user = await this.authService.signUp(signUpRequestDto);
+
+        if (file) {
+            await this.profileService.uploadProfilePicture(file, user.id);
+        }
+        
         const userResponseDto = new UserResponseDto(user);
         this.logger.verbose(`User signed up successfully: ${JSON.stringify(userResponseDto)}`);
         return new ApiResponse(true, 201, 'User signed up successfully', userResponseDto);

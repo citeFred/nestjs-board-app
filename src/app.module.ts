@@ -5,6 +5,7 @@ import { typeOrmConfig } from './configs/typeorm.config';
 import { GlobalModule } from './global.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { UserModule } from './user/user.module';
     TypeOrmModule.forRoot(typeOrmConfig),
     ArticleModule,
     AuthModule,
-    UserModule],
+    UserModule,
+    FileModule],
 })
 export class AppModule {}

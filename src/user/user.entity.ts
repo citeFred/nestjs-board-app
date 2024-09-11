@@ -1,7 +1,8 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 import { Article } from "src/article/article.entity";
 import { UserRole } from "./user-role.enum";
 import { BaseEntity } from "src/common/base.entity";
+import { File } from "src/file/entities/file.entity";
 
 @Entity()
 export class User extends BaseEntity{
@@ -11,7 +12,7 @@ export class User extends BaseEntity{
     @Column()
     password: string;
 
-    @Column({ unique: true }) // 이메일은 중복되지 않도록 한다.
+    @Column({ unique: true })
     email: string;
 
     @Column({ default: UserRole.USER })
@@ -26,6 +27,9 @@ export class User extends BaseEntity{
     @Column({ nullable: true })
     detailAddress: string;
 
-    @OneToMany(Type => Article, article => article.author, { eager: false })
+    @OneToMany(() => Article, article => article.author, { eager: false })
     articles: Article[];
+
+    @OneToMany(() => File, file => file.user, { eager: false })
+    files: File[];
 }
