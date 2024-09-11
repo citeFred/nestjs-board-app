@@ -17,9 +17,9 @@ export class File extends BaseEntity {
     @Column()
     size: number;
 
-    @ManyToOne(() => User, user => user.files, { eager: true })
+    @ManyToOne(() => User, user => user.files, { eager: false })
     user: User;
   
-    @ManyToOne(() => Article, article => article.files, { eager: true })
+    @ManyToOne(() => Article, article => article.files, { eager: false })
     article: Article;
 }

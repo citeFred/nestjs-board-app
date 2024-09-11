@@ -6,7 +6,6 @@ import { GlobalModule } from './global.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { FileModule } from './file/file.module';
-import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
