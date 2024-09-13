@@ -46,31 +46,6 @@ export class FileService {
     }
   }
 
-  // 기본 프로필 파일 업로드
-  async uploadDefaultProfilePictureFile() {
-    const uniqueFilename = `${uuidv4()}-default-profile.png`;
-    const filePath = path.join(this.uploadPath, uniqueFilename);
-  
-    try {
-      // 기본 프로필 사진을 새 파일로 복사
-      await fs.copyFile(this.defaultProfilePicturePath, filePath);
-      
-      // 파일 메타데이터 가져오기
-      const stats = await fs.stat(filePath);
-
-      const defaultProfilePicture = {
-        filePath: filePath,
-        filename: uniqueFilename,
-        mimetype: 'image/png',
-        size: stats.size,
-      };
-
-      return defaultProfilePicture;
-    } catch (err) {
-      console.error('Error copying default profile picture:', err);
-      throw new HttpException('Failed to upload default profile picture', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
 
   // 파일 엔터티 데이터베이스에 저장
   async save(file: File) {
