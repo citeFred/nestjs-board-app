@@ -8,9 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class FileService {
-  private uploadPath = '/Users/inyongkim/Documents/Projects/localStorage/profile';
-  private defaultPath = '/Users/inyongkim/Documents/Projects/localStorage/default'
-  private defaultProfilePicturePath = path.join(this.defaultPath, 'default-profile.png'); // 기본 프로필 사진 경로
+  private uploadPath = path.join(__dirname, '..', '..', 'public', 'uploads', 'profile'); 
   
   constructor(
     @InjectRepository(File)
@@ -31,7 +29,8 @@ export class FileService {
   async uploadFile(file: Express.Multer.File) {
     const uniqueFilename = `${uuidv4()}-${file.originalname}`;
     const filePath = path.join(this.uploadPath, uniqueFilename);
-  
+    const fileUrl = `http://localhost:${process.env.SERVER_PORT}/uploads/profile/${uniqueFilename}`;
+
     try {
       await fs.writeFile(filePath, file.buffer); // 파일 저장
       return {
@@ -40,35 +39,10 @@ export class FileService {
         filename: uniqueFilename,
         mimetype: file.mimetype,
         size: file.size,
+        url: fileUrl,
       };
     } catch (err) {
       throw new HttpException('Failed to upload file', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  // 기본 프로필 파일 업로드
-  async uploadDefaultProfilePictureFile() {
-    const uniqueFilename = `${uuidv4()}-default-profile.png`;
-    const filePath = path.join(this.uploadPath, uniqueFilename);
-  
-    try {
-      // 기본 프로필 사진을 새 파일로 복사
-      await fs.copyFile(this.defaultProfilePicturePath, filePath);
-      
-      // 파일 메타데이터 가져오기
-      const stats = await fs.stat(filePath);
-
-      const defaultProfilePicture = {
-        filePath: filePath,
-        filename: uniqueFilename,
-        mimetype: 'image/png',
-        size: stats.size,
-      };
-
-      return defaultProfilePicture;
-    } catch (err) {
-      console.error('Error copying default profile picture:', err);
-      throw new HttpException('Failed to upload default profile picture', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

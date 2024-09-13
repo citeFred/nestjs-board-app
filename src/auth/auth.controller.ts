@@ -27,8 +27,6 @@ export class AuthController {
 
         if (file) {
             await this.profileService.uploadProfilePicture(file, user.id);
-        } else {
-            await this.profileService.uploadDefaultProfilePicture(user.id);
         }
         
         const userResponseDto = new UserResponseDto(user);
@@ -46,7 +44,7 @@ export class AuthController {
 
         // [3] 쿠키 설정
         res.cookie('Authorization', jwtToken, {
-            httpOnly: true, // 클라이언트 측 스크립트에서 쿠키 접근 금지
+            httpOnly: false, // 클라이언트 측 스크립트에서 쿠키 접근 금지
             secure: false, // HTTPS에서만 쿠키 전송, 임시 비활성화
             maxAge: 3600000, // 1시간
             sameSite: 'lax', // CSRF 공격 방어 및 크로스 사이트 요청에서 쿠키 포함

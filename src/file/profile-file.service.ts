@@ -25,20 +25,6 @@ export class ProfileService {
         return result;
     }
 
-    // 기본 프로필 처리(회원가입 사진 미업로드)
-    async uploadDefaultProfilePicture(id: number) {
-        // 파일 업로드
-        const result = await this.fileService.uploadDefaultProfilePictureFile();
-
-        // 파일 메타데이터 저장
-        const newFile = await this.createFileMetadata(result, id);
-
-        // 파일 엔터티를 데이터베이스에 저장
-        await this.fileService.save(newFile);
-
-        return result;
-    }
-
     // 파일 메타데이터 생성 메서드
     private async createFileMetadata(result: any, userId: number): Promise<File> {
         const newFile = new File();
@@ -47,6 +33,7 @@ export class ProfileService {
         newFile.mimetype = result.mimetype;
         newFile.size = result.size;
         newFile.fileType = FileType.PROFILE;
+        newFile.url = result.url;
         newFile.user = await this.userService.findOneById(userId);
         return newFile;
     }

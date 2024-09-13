@@ -21,6 +21,9 @@ export class File extends BaseEntity {
     @Column()
     fileType: FileType;
 
+    @Column()
+    url: string;
+
     @ManyToOne(() => User, user => user.files, { eager: false })
     user: User;
   
