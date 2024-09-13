@@ -6,7 +6,7 @@ import { User } from "src/user/user.entity";
 import { SignInRequestDto } from './dto/sign-in-request.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './get-user.decorator';
-import { UserResponseDto } from './dto/user-response.dto';
+import { UserResponseDto } from '../user/dto/user-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
 import { ProfileService } from 'src/file/profile-file.service';
 import { FileInterceptor } from '@nestjs/platform-express';
