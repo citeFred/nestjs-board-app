@@ -1,26 +1,25 @@
-import { UserRole } from "src/user/user-role.enum";
-import { User } from "src/user/user.entity";
+import { FileResponseDto } from "src/file/dto/file-response.dto";
+import { UserRole } from "../user-role.enum";
+import { User } from "../user.entity";
 
-export class UserResponseDto {
+export class UserWithFilesResponseDto {
     id: number;
     username: string;
     email: string;
     role: UserRole;
-    createdAt: Date;
-    updatedAt: Date;
     postalCode: string;
     address: string;
     detailAddress: string;
+    files: FileResponseDto[];
 
-    constructor(user: User){
+    constructor(user: User) {
         this.id = user.id;
         this.username = user.username;
         this.email = user.email;
         this.role = user.role;
-        this.createdAt = user.createdAt;
-        this.updatedAt = user.updatedAt;
         this.postalCode = user.postalCode;
         this.address = user.address;
         this.detailAddress = user.detailAddress;
+        this.files = user.files.map(file => new FileResponseDto(file));
     }
 }
