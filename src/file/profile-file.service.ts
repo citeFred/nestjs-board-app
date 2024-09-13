@@ -25,7 +25,6 @@ export class ProfileService {
         return result;
     }
 
-
     // 파일 메타데이터 생성 메서드
     private async createFileMetadata(result: any, userId: number): Promise<File> {
         const newFile = new File();
@@ -34,6 +33,7 @@ export class ProfileService {
         newFile.mimetype = result.mimetype;
         newFile.size = result.size;
         newFile.fileType = FileType.PROFILE;
+        newFile.url = result.url;
         newFile.user = await this.userService.findOneById(userId);
         return newFile;
     }

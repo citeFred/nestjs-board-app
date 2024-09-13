@@ -9,6 +9,7 @@ export class FileResponseDto {
     path: string;
     size: number;
     fileType: FileType;
+    url: string;
     createdAt: Date;
     updatedAt: Date;
 
@@ -19,6 +20,7 @@ export class FileResponseDto {
         this.path = file.path;
         this.size = file.size;
         this.fileType = file.fileType;
+        this.url = file.url;
         this.createdAt = file.createdAt;
         this.updatedAt = file.updatedAt;
     }
