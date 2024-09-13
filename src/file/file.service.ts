@@ -8,9 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class FileService {
-  private uploadPath = '/Users/inyongkim/Documents/Projects/localStorage/profile';
-  private defaultPath = '/Users/inyongkim/Documents/Projects/localStorage/default'
-  private defaultProfilePicturePath = path.join(this.defaultPath, 'default-profile.png'); // 기본 프로필 사진 경로
+  private uploadPath = path.join(__dirname, '..', '..', 'public', 'uploads', 'profile'); 
   
   constructor(
     @InjectRepository(File)
@@ -31,7 +29,8 @@ export class FileService {
   async uploadFile(file: Express.Multer.File) {
     const uniqueFilename = `${uuidv4()}-${file.originalname}`;
     const filePath = path.join(this.uploadPath, uniqueFilename);
-  
+    const fileUrl = `http://localhost:${process.env.SERVER_PORT}/uploads/profile/${uniqueFilename}`;
+
     try {
       await fs.writeFile(filePath, file.buffer); // 파일 저장
       return {
@@ -40,12 +39,12 @@ export class FileService {
         filename: uniqueFilename,
         mimetype: file.mimetype,
         size: file.size,
+        url: fileUrl,
       };
     } catch (err) {
       throw new HttpException('Failed to upload file', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
 
   // 파일 엔터티 데이터베이스에 저장
   async save(file: File) {
