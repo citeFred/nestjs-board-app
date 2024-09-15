@@ -14,6 +14,7 @@ import { ApiResponse } from 'src/common/api-response.dto';
 import { ArticleResponseDto } from './dto/article-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AttachmentService } from 'src/file/attachment/attachment.service';
+import { ArticleWithAttachmentAndUserResponseDto } from './dto/article-with-attachment-user-response.dto';
 
 @Controller('api/articles')
 @UseGuards(AuthGuard('jwt'), RolesGuard) // JWT 인증과 role 커스텀 가드를 적용
@@ -27,7 +28,11 @@ export class ArticleController {
     @Post('/')
     @UseInterceptors(FileInterceptor('articleFile'))
     @Roles(UserRole.USER)
-    async createArticle(@Body() createArticleRequestDto: CreateArticleRequestDto, @GetUser() user: User, @UploadedFile() file: Express.Multer.File): Promise<ApiResponse<ArticleResponseDto>> {
+    async createArticle(
+        @Body() createArticleRequestDto: CreateArticleRequestDto,
+        @GetUser() user: User,
+        @UploadedFile() file: Express.Multer.File
+    ): Promise<ApiResponse<ArticleWithAttachmentAndUserResponseDto>> {
         this.logger.verbose(`User ${user.username} creating a new Article. Data: ${JSON.stringify(createArticleRequestDto)}`);
         const article = await this.articleService.createArticle(createArticleRequestDto, user);
 
@@ -35,7 +40,7 @@ export class ArticleController {
             await this.attachmentService.uploadArticleFiles(file, article);
         }
 
-        const articleDto = new ArticleResponseDto(article);
+        const articleDto = new ArticleWithAttachmentAndUserResponseDto(article);
         this.logger.verbose(`Article created successfully: ${JSON.stringify(articleDto)}`);
         return new ApiResponse(true, 201, 'Article created successfully', articleDto);
     }
