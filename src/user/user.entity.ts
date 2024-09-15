@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany } from "typeorm";
 import { Article } from "src/article/article.entity";
 import { UserRole } from "./user-role.enum";
 import { BaseEntity } from "src/common/base.entity";
-import { File } from "src/file/entities/file.entity";
+import { ProfilePicture } from "src/file/profilePicture/entities/profile-picture.entity";
 
 @Entity()
 export class User extends BaseEntity{
@@ -30,6 +30,6 @@ export class User extends BaseEntity{
     @OneToMany(() => Article, article => article.author, { eager: false })
     articles: Article[];
 
-    @OneToMany(() => File, file => file.user, { eager: false })
-    files: File[];
+    @OneToMany(() => ProfilePicture, profilePicture => profilePicture.user, { eager: false })
+    profilePictures: ProfilePicture[];
 }

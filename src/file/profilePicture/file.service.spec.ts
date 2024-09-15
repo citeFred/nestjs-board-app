@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FileService } from './file.service';
+import { ProfilePictureUploadService } from './profile-picture-upload.service';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 
 describe('FileService', () => {
-  let service: FileService;
+  let service: ProfilePictureUploadService;
   const uploadPath = '/Users/inyongkim/Documents/Projects/localStorage';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [FileService],
+      providers: [ProfilePictureUploadService],
     }).compile();
 
-    service = module.get<FileService>(FileService);
+    service = module.get<ProfilePictureUploadService>(ProfilePictureUploadService);
     service['uploadPath'] = uploadPath;  // 경로 설정
   });
 
@@ -52,7 +52,7 @@ describe('FileService', () => {
       const mockFilePath = path.join(uploadPath, mockFile.originalname);
 
       // When: 파일 업로드를 시도
-      const result = await service.uploadFile(mockFile);
+      const result = await service.uploadProfilePicture(mockFile);
 
       // Then: 파일 업로드가 성공했는지 확인
       expect(result).toEqual({
@@ -83,7 +83,7 @@ describe('FileService', () => {
 
       // When: 파일 업로드가 실패할 때
       // Then: 오류가 발생하는지 확인
-      await expect(service.uploadFile(mockFile)).rejects.toThrow('Failed to upload file');
+      await expect(service.uploadProfilePicture(mockFile)).rejects.toThrow('Failed to upload file');
     });
   });
 

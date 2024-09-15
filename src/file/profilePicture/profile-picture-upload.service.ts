@@ -1,18 +1,18 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { File } from './entities/file.entity';
+import { ProfilePicture } from './entities/profile-picture.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
-export class FileService {
+export class ProfilePictureUploadService {
   private uploadPath = path.join(__dirname, '..', '..', 'public', 'uploads', 'profile'); 
   
   constructor(
-    @InjectRepository(File)
-    private readonly fileRepository: Repository<File>
+    @InjectRepository(ProfilePicture)
+    private readonly profilePictureRepository: Repository<ProfilePicture>
   ) { 
     this.ensureUploadPathExists();
   }
@@ -25,8 +25,8 @@ export class FileService {
     }
   }
 
-  // 파일 업로드
-  async uploadFile(file: Express.Multer.File) {
+  // 프로필 사진 파일 업로드
+  async uploadProfilePicture(file: Express.Multer.File) {
     const uniqueFilename = `${uuidv4()}-${file.originalname}`;
     const filePath = path.join(this.uploadPath, uniqueFilename);
     const fileUrl = `http://localhost:${process.env.SERVER_PORT}/uploads/profile/${uniqueFilename}`;
@@ -46,28 +46,12 @@ export class FileService {
     }
   }
 
-  // 파일 엔터티 데이터베이스에 저장
-  async save(file: File) {
+  // 프로필 사진 파일 엔터티 데이터베이스에 저장
+  async save(file: ProfilePicture) {
     try {
-      return await this.fileRepository.save(file);
+      return await this.profilePictureRepository.save(file);
     } catch (err) {
       throw new HttpException('Failed to save file', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  }
-
-  findAll() {
-    return `This action returns all files`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} file`;
-  }
-
-  update(id: number, updateFileDto: any) {
-    return `This action updates a #${id} file`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} file`;
   }
 }

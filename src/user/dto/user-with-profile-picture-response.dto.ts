@@ -1,8 +1,8 @@
-import { FileResponseDto } from "src/file/dto/file-response.dto";
+import { ProfilePictureResponseDto } from "src/file/profilePicture/dto/profile-picture-response.dto";
 import { UserRole } from "../user-role.enum";
 import { User } from "../user.entity";
 
-export class UserWithFilesResponseDto {
+export class UserWithProfilePictureResponseDto {
     id: number;
     username: string;
     email: string;
@@ -10,7 +10,7 @@ export class UserWithFilesResponseDto {
     postalCode: string;
     address: string;
     detailAddress: string;
-    files: FileResponseDto[];
+    profilePictures: ProfilePictureResponseDto[];
 
     constructor(user: User) {
         this.id = user.id;
@@ -20,6 +20,6 @@ export class UserWithFilesResponseDto {
         this.postalCode = user.postalCode;
         this.address = user.address;
         this.detailAddress = user.detailAddress;
-        this.files = user.files.map(file => new FileResponseDto(file));
+        this.profilePictures = user.profilePictures.map(profilePicture => new ProfilePictureResponseDto(profilePicture));
     }
 }
