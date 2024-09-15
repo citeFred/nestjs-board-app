@@ -8,7 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './get-user.decorator';
 import { UserResponseDto } from '../user/dto/user-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
-import { ProfileService } from 'src/file/profile-file.service';
+import { ProfilePictureService } from 'src/file/profilePicture/profile-picture.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 
@@ -16,7 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class AuthController {
     private readonly logger = new Logger(AuthController.name); // Logger 인스턴스
 
-    constructor(private authService: AuthService, private profileService: ProfileService){}
+    constructor(private authService: AuthService, private profilePictureService: ProfilePictureService){}
 
     // 회원 가입 기능
     @Post('/signup')
@@ -26,7 +26,7 @@ export class AuthController {
         const user = await this.authService.signUp(signUpRequestDto);
 
         if (file) {
-            await this.profileService.uploadProfilePicture(file, user.id);
+            await this.profilePictureService.uploadProfilePicture(file, user.id);
         }
         
         const userResponseDto = new UserResponseDto(user);

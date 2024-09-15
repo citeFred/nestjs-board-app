@@ -5,7 +5,7 @@ import { typeOrmConfig } from './configs/typeorm.config';
 import { GlobalModule } from './global.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { FileModule } from './file/file.module';
+import { ProfilePictureModule } from './file/profilePicture/profile-picture.module';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { FileModule } from './file/file.module';
     ArticleModule,
     AuthModule,
     UserModule,
-    FileModule
+    ProfilePictureModule
   ],
 })
 export class AppModule {}

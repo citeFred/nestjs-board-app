@@ -1,25 +1,25 @@
 
-import { FileType } from "../entities/file-type.enum";
-import { File } from "../entities/file.entity";
+import { ProfilePictureType } from "../entities/profile-pictures-type.enum";
+import { ProfilePicture } from "../entities/profile-picture.entity";
 
-export class FileResponseDto {
+export class ProfilePictureResponseDto {
     id: number;
     filename: string;
     mimetype: string;
     path: string;
     size: number;
-    fileType: FileType;
+    profilePictureType: ProfilePictureType;
     url: string;
     createdAt: Date;
     updatedAt: Date;
 
-    constructor(file: File){
+    constructor(file: ProfilePicture){
         this.id = file.id;
         this.filename = file.filename;
         this.mimetype = file.mimetype;
         this.path = file.path;
         this.size = file.size;
-        this.fileType = file.fileType;
+        this.profilePictureType = file.profilePictureType;
         this.url = file.url;
         this.createdAt = file.createdAt;
         this.updatedAt = file.updatedAt;
