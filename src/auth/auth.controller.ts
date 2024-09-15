@@ -21,7 +21,10 @@ export class AuthController {
     // 회원 가입 기능
     @Post('/signup')
     @UseInterceptors(FileInterceptor('profilePicture'))
-    async signUp(@Body() signUpRequestDto: SignUpRequestDto, @UploadedFile() file: Express.Multer.File): Promise<ApiResponse<UserResponseDto>> {
+    async signUp(
+        @Body() signUpRequestDto: SignUpRequestDto,
+        @UploadedFile() file: Express.Multer.File
+    ): Promise<ApiResponse<UserResponseDto>> {
         this.logger.verbose(`Attempting to sign up user with email: ${signUpRequestDto.email}`);
         const user = await this.authService.signUp(signUpRequestDto);
 
@@ -36,7 +39,10 @@ export class AuthController {
 
     // 로그인 기능
     @Post('/signin')
-    async signIn(@Body() signInRequestDto: SignInRequestDto, @Res() res: Response): Promise<void> {
+    async signIn(
+        @Body() signInRequestDto: SignInRequestDto,
+        @Res() res: Response
+    ): Promise<void> {
         this.logger.verbose(`Attempting to sign in user with email: ${signInRequestDto.email}`);
         const { jwtToken, user } = await this.authService.signIn(signInRequestDto);
         const userResponseDto = new UserResponseDto(user);
@@ -71,7 +77,10 @@ export class AuthController {
 
     // 카카오 로그인 콜백 엔드포인트
     @Get('kakao/callback')
-    async kakaoCallback(@Query('code') kakaoAuthResCode: string, @Res() res: Response) {  // Authorization Code 받기
+    async kakaoCallback(
+        @Query('code') kakaoAuthResCode: string,
+        @Res() res: Response
+    ) {  // Authorization Code 받기
         const { jwtToken, user } = await this.authService.signInWithKakao(kakaoAuthResCode);
     
         // 쿠키에 JWT 설정

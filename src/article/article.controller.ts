@@ -58,7 +58,10 @@ export class ArticleController {
 
     // 페이징 처리된 게시글 조회
     @Get('/paginated')
-    async getPaginatedArticles( @Query('page') page: number = 1, @Query('limit') limit: number = 10 ): Promise<ApiResponse<ArticleResponseDto[]>> {
+    async getPaginatedArticles(
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 10
+    ): Promise<ApiResponse<ArticleResponseDto[]>> {
         this.logger.verbose(`Retrieving paginated articles: page ${page}, limit ${limit}`);
         const articles = await this.articleService.getPaginatedArticles(page, limit);
         const articleDtos = articles.map(article => new ArticleResponseDto(article));
@@ -68,7 +71,9 @@ export class ArticleController {
 
     // 나의 게시글 조회 기능
     @Get('/myarticles')
-    async getMyAllArticles(@GetUser() user: User): Promise<ApiResponse<ArticleResponseDto[]>> {
+    async getMyAllArticles(
+        @GetUser() user: User
+    ): Promise<ApiResponse<ArticleResponseDto[]>> {
         this.logger.verbose(`User ${user.username} retrieving their Articles`);
         const articles = await this.articleService.getMyAllArticles(user);
         const articleDtos = articles.map(article => new ArticleResponseDto(article));
@@ -78,7 +83,9 @@ export class ArticleController {
 
     // 특정 번호의 게시글 조회
     @Get('/:id')
-    async getArticleById(@Param('id') id: number): Promise<ApiResponse<ArticleResponseDto>> {
+    async getArticleById(
+        @Param('id') id: number
+    ): Promise<ApiResponse<ArticleResponseDto>> {
         this.logger.verbose(`Retrieving Article with ID ${id}`);
         const article = await this.articleService.getArticleById(id);
         const articleDto = new ArticleResponseDto(article);
@@ -88,7 +95,9 @@ export class ArticleController {
 
     // 특정 작성자의 게시글 조회
     @Get('/search')
-    async getArticlesByAuthor(@Query('author') author: string): Promise<ApiResponse<ArticleResponseDto[]>> {
+    async getArticlesByAuthor(
+        @Query('author') author: string
+    ): Promise<ApiResponse<ArticleResponseDto[]>> {
         this.logger.verbose(`Searching Articles by author ${author}`);
         const articles = await this.articleService.getArticlesByAuthor(author);
         const articleDtos = articles.map(article => new ArticleResponseDto(article));
@@ -99,7 +108,10 @@ export class ArticleController {
     // 특정 번호의 게시글 삭제
     @Delete('/:id')
     @Roles(UserRole.USER)
-    async deleteArticleById(@Param('id') id: number, @GetUser() user: User): Promise<ApiResponse<void>> {
+    async deleteArticleById(
+        @Param('id') id: number,
+        @GetUser() user: User
+    ): Promise<ApiResponse<void>> {
         this.logger.verbose(`User ${user.username} deleting Article with ID ${id}`);
         await this.articleService.deleteArticleById(id, user);
         this.logger.verbose(`Article deleted successfully with ID ${id}`);
@@ -109,7 +121,11 @@ export class ArticleController {
     // 특정 번호의 게시글의 일부 수정 (관리자가 부적절한 글을 비공개로 설정)
     @Patch('/:id/status')
     @Roles(UserRole.ADMIN)
-    async updateArticleStatusById(@Param('id') id: number, @Body('status', ArticleStatusValidationPipe) status: ArticleStatus, @GetUser() user: User): Promise<ApiResponse<void>> {
+    async updateArticleStatusById(
+        @Param('id') id: number,
+        @Body('status', ArticleStatusValidationPipe) status: ArticleStatus,
+        @GetUser() user: User
+    ): Promise<ApiResponse<void>> {
         this.logger.verbose(`Admin ${user.username} updating status of Article ID ${id} to ${status}`);
         await this.articleService.updateArticleStatusById(id, status, user);
         this.logger.verbose(`Article status updated successfully for ID ${id} to ${status}`);
@@ -118,7 +134,10 @@ export class ArticleController {
 
     // 특정 번호의 게시글의 전체 수정
     @Put('/:id')
-    async updateArticleById(@Param('id') id: number, @Body() updateArticleRequestDto: UpdateArticleRequestDto): Promise<ApiResponse<void>> {
+    async updateArticleById(
+        @Param('id') id: number,
+        @Body() updateArticleRequestDto: UpdateArticleRequestDto
+    ): Promise<ApiResponse<void>> {
         this.logger.verbose(`Updating Article with ID ${id}`);
         await this.articleService.updateArticleById(id, updateArticleRequestDto);
         this.logger.verbose(`Article updated successfully with ID ${id}`);

@@ -14,7 +14,9 @@ export class UserController {
 
     // 특정 번호의 회원 정보 조회
     @Get(':id')
-    async getUserById(@Param('id') id: number): Promise<ApiResponse<UserWithProfilePictureResponseDto>> {
+    async getUserById(
+        @Param('id') id: number
+    ): Promise<ApiResponse<UserWithProfilePictureResponseDto>> {
         this.logger.verbose(`Retrieving User with ID ${id}`);
         const user = await this.userService.findOneByIdWithFiles(id);
         const userDto = new UserWithProfilePictureResponseDto(user);
