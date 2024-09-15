@@ -8,7 +8,7 @@ import { Attachment } from './entities/attachment.entity';
 
 @Injectable()
 export class AttachmentUploadService {
-  private uploadPath = path.join(__dirname, '..', '..', 'public', 'uploads', 'attachment'); 
+  private uploadPath = path.join(__dirname, '../..', 'public', 'uploads', 'attachment'); 
   
   constructor(
     @InjectRepository(Attachment)

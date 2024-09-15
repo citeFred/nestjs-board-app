@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ProfilePictureUploadService {
-  private uploadPath = path.join(__dirname, '..', '..', 'public', 'uploads', 'profile'); 
+  private uploadPath = path.join(__dirname, '../..', 'public', 'uploads', 'profile'); 
   
   constructor(
     @InjectRepository(ProfilePicture)
