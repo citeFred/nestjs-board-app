@@ -26,7 +26,7 @@ export class AuthController {
         const user = await this.authService.signUp(signUpRequestDto);
 
         if (file) {
-            await this.profilePictureService.uploadProfilePicture(file, user.id);
+            await this.profilePictureService.uploadProfilePicture(file, user);
         }
         
         const userResponseDto = new UserResponseDto(user);

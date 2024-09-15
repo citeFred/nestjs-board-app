@@ -2,7 +2,6 @@ import { Controller, Get, Logger, Param, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/custom-role.guard';
-import { UserResponseDto } from 'src/user/dto/user-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
 import { UserWithProfilePictureResponseDto } from './dto/user-with-profile-picture-response.dto';
 
