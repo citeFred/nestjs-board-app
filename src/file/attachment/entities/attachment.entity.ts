@@ -1,6 +1,6 @@
 import { BaseEntity } from "src/common/base.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
-import { Article } from "src/article/article.entity";
+import { Article } from "src/article/entities/article.entity";
 import { AttachmentType } from "./attachment-type.enum";
 
 @Entity()

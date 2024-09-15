@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Attachment } from './entities/attachment.entity';
 import { AttachmentType } from './entities/attachment-type.enum';
 import { AttachmentUploadService } from './attachment-upload.service';
-import { Article } from 'src/article/article.entity';
+import { Article } from 'src/article/entities/article.entity';
 
 @Injectable()
 export class AttachmentService {

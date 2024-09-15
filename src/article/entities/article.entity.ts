@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { ArticleStatus } from "./article-status.enum";
-import { User } from "src/user/user.entity";
+import { User } from "src/user/entities/user.entity";
 import { BaseEntity } from "src/common/base.entity";
 import { Attachment } from "src/file/attachment/entities/attachment.entity";
 

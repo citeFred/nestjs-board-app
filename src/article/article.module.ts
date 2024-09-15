@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ArticleService } from './article.service';
-import { Article } from './article.entity';
+import { Article } from './entities/article.entity';
 import { ArticleController } from './article.controller';
 import { AttachmentModule } from 'src/file/attachment/attachment.module';
 

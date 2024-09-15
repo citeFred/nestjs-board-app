@@ -1,6 +1,6 @@
 import { AttachmentResponseDto } from "src/file/attachment/dto/attachment-response.dto";
-import { ArticleStatus } from "../article-status.enum";
-import { Article } from "../article.entity";
+import { ArticleStatus } from "../entities/article-status.enum";
+import { Article } from "../entities/article.entity";
 import { UserResponseDto } from "src/user/dto/user-response.dto";
 
 export class ArticleWithAttachmentAndUserResponseDto {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ProfilePictureUploadService } from './profile-picture-upload.service';
 import { ProfilePictureType } from './entities/profile-picture-type.enum';
 import { ProfilePicture } from './entities/profile-picture.entity';
-import { User } from 'src/user/user.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class ProfilePictureService {

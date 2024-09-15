@@ -1,15 +1,15 @@
 import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Put, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleRequestDto } from './dto/create-article-request.dto';
-import { ArticleStatus } from './article-status.enum';
+import { ArticleStatus } from './entities/article-status.enum';
 import { UpdateArticleRequestDto } from './dto/update-article-request.dto';
 import { ArticleStatusValidationPipe } from './pipes/article-status-validation.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/custom-role.guard';
 import { Roles } from 'src/auth/roles.decorator';
-import { UserRole } from 'src/user/user-role.enum';
+import { UserRole } from 'src/user/entities/user-role.enum';
 import { GetUser } from 'src/auth/get-user.decorator';
-import { User } from "src/user/user.entity";
+import { User } from "src/user/entities/user.entity";
 import { ApiResponse } from 'src/common/api-response.dto';
 import { ArticleResponseDto } from './dto/article-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
