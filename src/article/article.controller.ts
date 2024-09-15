@@ -1,6 +1,5 @@
-import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Put, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { Article } from './article.entity';
 import { CreateArticleRequestDto } from './dto/create-article-request.dto';
 import { ArticleStatus } from './article-status.enum';
 import { UpdateArticleRequestDto } from './dto/update-article-request.dto';
@@ -13,6 +12,8 @@ import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from "src/user/user.entity";
 import { ApiResponse } from 'src/common/api-response.dto';
 import { ArticleResponseDto } from './dto/article-response.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { AttachmentService } from 'src/file/attachment/attachment.service';
 
 @Controller('api/articles')
 @UseGuards(AuthGuard('jwt'), RolesGuard) // JWT 인증과 role 커스텀 가드를 적용
@@ -20,14 +21,20 @@ export class ArticleController {
     private readonly logger = new Logger(ArticleController.name); // Logger 인스턴스 생성
 
     // 생성자 주입(DI)
-    constructor(private articleService: ArticleService){}
+    constructor(private articleService: ArticleService, private attachmentService: AttachmentService){} 
     
     // 게시글 작성 기능
     @Post('/')
+    @UseInterceptors(FileInterceptor('articleFile'))
     @Roles(UserRole.USER)
-    async createArticle(@Body() createArticleRequestDto: CreateArticleRequestDto, @GetUser() user: User): Promise<ApiResponse<ArticleResponseDto>> {
+    async createArticle(@Body() createArticleRequestDto: CreateArticleRequestDto, @GetUser() user: User, @UploadedFile() file: Express.Multer.File): Promise<ApiResponse<ArticleResponseDto>> {
         this.logger.verbose(`User ${user.username} creating a new Article. Data: ${JSON.stringify(createArticleRequestDto)}`);
         const article = await this.articleService.createArticle(createArticleRequestDto, user);
+
+        if (file) {
+            await this.attachmentService.uploadArticleFiles(file, article);
+        }
+
         const articleDto = new ArticleResponseDto(article);
         this.logger.verbose(`Article created successfully: ${JSON.stringify(articleDto)}`);
         return new ApiResponse(true, 201, 'Article created successfully', articleDto);
