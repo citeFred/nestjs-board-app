@@ -1,10 +1,10 @@
 import { BaseEntity } from "src/common/base.entity";
-import { User } from "src/user/entities/user.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
-import { ProfilePictureType } from "./profile-picture-type.enum";
+import { Article } from "src/article/entities/article.entity";
+import { AttachmentType } from "./attachment-type.enum";
 
 @Entity()
-export class ProfilePicture extends BaseEntity {
+export class Attachment extends BaseEntity {
     @Column()
     filename: string;
   
@@ -18,11 +18,11 @@ export class ProfilePicture extends BaseEntity {
     size: number;
 
     @Column()
-    profilePictureType: ProfilePictureType;
+    attachmentType: AttachmentType;
 
     @Column()
     url: string;
 
-    @ManyToOne(() => User, user => user.profilePictures, { eager: false })
-    user: User;
+    @ManyToOne(() => Article, article => article.attachments, { eager: false })
+    article: Article;
 }

@@ -6,6 +6,7 @@ import { GlobalModule } from './global.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ProfilePictureModule } from './file/profilePicture/profile-picture.module';
+import { AttachmentModule } from './file/attachment/attachment.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { ProfilePictureModule } from './file/profilePicture/profile-picture.modu
     ArticleModule,
     AuthModule,
     UserModule,
-    ProfilePictureModule
+    ProfilePictureModule,
+    AttachmentModule,
   ],
 })
 export class AppModule {}

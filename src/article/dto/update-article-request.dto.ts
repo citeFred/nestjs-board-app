@@ -1,4 +1,4 @@
-import { ArticleStatus } from "../article-status.enum";
+import { ArticleStatus } from "../entities/article-status.enum";
 
 export class UpdateArticleRequestDto {
     author: string;

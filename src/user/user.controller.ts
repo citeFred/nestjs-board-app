@@ -2,7 +2,6 @@ import { Controller, Get, Logger, Param, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/custom-role.guard';
-import { UserResponseDto } from 'src/user/dto/user-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
 import { UserWithProfilePictureResponseDto } from './dto/user-with-profile-picture-response.dto';
 
@@ -15,7 +14,9 @@ export class UserController {
 
     // 특정 번호의 회원 정보 조회
     @Get(':id')
-    async getUserById(@Param('id') id: number): Promise<ApiResponse<UserWithProfilePictureResponseDto>> {
+    async getUserById(
+        @Param('id') id: number
+    ): Promise<ApiResponse<UserWithProfilePictureResponseDto>> {
         this.logger.verbose(`Retrieving User with ID ${id}`);
         const user = await this.userService.findOneByIdWithFiles(id);
         const userDto = new UserWithProfilePictureResponseDto(user);

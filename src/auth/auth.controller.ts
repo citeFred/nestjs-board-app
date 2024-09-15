@@ -2,7 +2,7 @@ import { Body, Controller, Get, Logger, Post, Query, Req, Res, UseGuards, UseInt
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignUpRequestDto } from './dto/sign-up-request.dto';
-import { User } from "src/user/user.entity";
+import { User } from "src/user/entities/user.entity";
 import { SignInRequestDto } from './dto/sign-in-request.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './get-user.decorator';
@@ -21,12 +21,15 @@ export class AuthController {
     // 회원 가입 기능
     @Post('/signup')
     @UseInterceptors(FileInterceptor('profilePicture'))
-    async signUp(@Body() signUpRequestDto: SignUpRequestDto, @UploadedFile() file: Express.Multer.File): Promise<ApiResponse<UserResponseDto>> {
+    async signUp(
+        @Body() signUpRequestDto: SignUpRequestDto,
+        @UploadedFile() file: Express.Multer.File
+    ): Promise<ApiResponse<UserResponseDto>> {
         this.logger.verbose(`Attempting to sign up user with email: ${signUpRequestDto.email}`);
         const user = await this.authService.signUp(signUpRequestDto);
 
         if (file) {
-            await this.profilePictureService.uploadProfilePicture(file, user.id);
+            await this.profilePictureService.uploadProfilePicture(file, user);
         }
         
         const userResponseDto = new UserResponseDto(user);
@@ -36,7 +39,10 @@ export class AuthController {
 
     // 로그인 기능
     @Post('/signin')
-    async signIn(@Body() signInRequestDto: SignInRequestDto, @Res() res: Response): Promise<void> {
+    async signIn(
+        @Body() signInRequestDto: SignInRequestDto,
+        @Res() res: Response
+    ): Promise<void> {
         this.logger.verbose(`Attempting to sign in user with email: ${signInRequestDto.email}`);
         const { jwtToken, user } = await this.authService.signIn(signInRequestDto);
         const userResponseDto = new UserResponseDto(user);
@@ -71,7 +77,10 @@ export class AuthController {
 
     // 카카오 로그인 콜백 엔드포인트
     @Get('kakao/callback')
-    async kakaoCallback(@Query('code') kakaoAuthResCode: string, @Res() res: Response) {  // Authorization Code 받기
+    async kakaoCallback(
+        @Query('code') kakaoAuthResCode: string,
+        @Res() res: Response
+    ) {  // Authorization Code 받기
         const { jwtToken, user } = await this.authService.signInWithKakao(kakaoAuthResCode);
     
         // 쿠키에 JWT 설정

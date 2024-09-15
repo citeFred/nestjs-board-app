@@ -1,6 +1,6 @@
 import { ProfilePictureResponseDto } from "src/file/profilePicture/dto/profile-picture-response.dto";
-import { UserRole } from "../user-role.enum";
-import { User } from "../user.entity";
+import { UserRole } from "../entities/user-role.enum";
+import { User } from "../entities/user.entity";
 
 export class UserWithProfilePictureResponseDto {
     id: number;
