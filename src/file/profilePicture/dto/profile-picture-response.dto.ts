@@ -1,4 +1,3 @@
-
 import { ProfilePictureType } from "../entities/profile-pictures-type.enum";
 import { ProfilePicture } from "../entities/profile-picture.entity";
 

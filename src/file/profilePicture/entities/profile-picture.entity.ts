@@ -1,4 +1,3 @@
-import { Article } from "src/article/article.entity";
 import { BaseEntity } from "src/common/base.entity";
 import { User } from "src/user/user.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
