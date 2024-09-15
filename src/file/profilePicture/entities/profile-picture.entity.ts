@@ -1,7 +1,7 @@
 import { BaseEntity } from "src/common/base.entity";
 import { User } from "src/user/user.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
-import { ProfilePictureType } from "./profile-pictures-type.enum";
+import { ProfilePictureType } from "./profile-picture-type.enum";
 
 @Entity()
 export class ProfilePicture extends BaseEntity {

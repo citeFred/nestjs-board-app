@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProfilePictureUploadService } from './profile-picture-upload.service';
-import { ProfilePictureType } from './entities/profile-pictures-type.enum';
+import { ProfilePictureType } from './entities/profile-picture-type.enum';
 import { ProfilePicture } from './entities/profile-picture.entity';
 import { User } from 'src/user/user.entity';
 

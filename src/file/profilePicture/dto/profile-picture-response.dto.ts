@@ -1,4 +1,4 @@
-import { ProfilePictureType } from "../entities/profile-pictures-type.enum";
+import { ProfilePictureType } from "../entities/profile-picture-type.enum";
 import { ProfilePicture } from "../entities/profile-picture.entity";
 
 export class ProfilePictureResponseDto {
