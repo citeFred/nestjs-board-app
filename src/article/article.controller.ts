@@ -15,6 +15,7 @@ import { ArticleResponseDto } from './dto/article-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AttachmentService } from 'src/file/attachment/attachment.service';
 import { ArticleWithAttachmentAndUserResponseDto } from './dto/article-with-attachment-user-response.dto';
+import { ArticlePaginatedResponseDto } from './dto/article-paginated-response.dto';
 
 @Controller('api/articles')
 @UseGuards(AuthGuard('jwt'), RolesGuard) // JWT 인증과 role 커스텀 가드를 적용
@@ -61,13 +62,15 @@ export class ArticleController {
     async getPaginatedArticles(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10
-    ): Promise<ApiResponse<ArticleResponseDto[]>> {
+    ): Promise<ApiResponse<ArticlePaginatedResponseDto>> {
         this.logger.verbose(`Retrieving paginated articles: page ${page}, limit ${limit}`);
-        const articles = await this.articleService.getPaginatedArticles(page, limit);
-        const articleDtos = articles.map(article => new ArticleResponseDto(article));
+        const paginatedResponse = await this.articleService.getPaginatedArticles(page, limit);
         this.logger.verbose(`Paginated articles retrieved successfully`);
-        return new ApiResponse(true, 200, 'Paginated articles retrieved successfully', articleDtos);
+        
+        return new ApiResponse(true, 200, 'Paginated articles retrieved successfully', paginatedResponse);
     }
+    
+    
 
     // 나의 게시글 조회 기능
     @Get('/myarticles')
