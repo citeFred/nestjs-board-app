@@ -7,6 +7,8 @@ import { UpdateArticleRequestDto } from './dto/update-article-request.dto';
 import { CreateArticleRequestDto } from './dto/create-article-request.dto';
 import { User } from "src/user/entities/user.entity";
 import { UserRole } from 'src/user/entities/user-role.enum';
+import { ArticlePaginatedResponseDto } from './dto/article-paginated-response.dto';
+import { ArticleWithAttachmentAndUserResponseDto } from './dto/article-with-attachment-user-response.dto';
 
 @Injectable()
 export class ArticleService {
@@ -42,17 +44,21 @@ export class ArticleService {
     }
 
     // 페이징 추가 게시글 조회 기능
-    async getPaginatedArticles(page: number, limit: number): Promise<Article[]> {
+    async getPaginatedArticles(page: number, limit: number): Promise<ArticlePaginatedResponseDto> {
         this.logger.verbose(`Retrieving paginated articles: page ${page}, limit ${limit}`);
         const skip: number = (page - 1) * limit;
-        const articles = await this.articleRepository.find({
+    
+        const [articles, totalCount] = await this.articleRepository.findAndCount({
             skip,
             take: limit,
             order: { createdAt: 'DESC' } // 내림차순
         });
+    
+        const articleDtos = articles.map(article => new ArticleWithAttachmentAndUserResponseDto(article));
         this.logger.verbose(`Paginated articles retrieved successfully`);
-        return articles;
+        return new ArticlePaginatedResponseDto(articleDtos, totalCount);
     }
+    
     
 
     // 나의 게시글 조회
