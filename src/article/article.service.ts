@@ -48,11 +48,13 @@ export class ArticleService {
         this.logger.verbose(`Retrieving paginated articles: page ${page}, limit ${limit}`);
         const skip: number = (page - 1) * limit;
     
-        const [articles, totalCount] = await this.articleRepository.findAndCount({
-            skip,
-            take: limit,
-            order: { createdAt: 'DESC' } // 내림차순
-        });
+        const [articles, totalCount] = await this.articleRepository.createQueryBuilder("article")
+        .leftJoinAndSelect("article.attachments", "attachment")
+        .leftJoinAndSelect("article.user", "user")
+        .skip(skip)
+        .take(limit)
+        .orderBy("article.createdAt", "DESC") // 내림차순
+        .getManyAndCount();
     
         const articleDtos = articles.map(article => new ArticleWithAttachmentAndUserResponseDto(article));
         this.logger.verbose(`Paginated articles retrieved successfully`);
