@@ -9,7 +9,7 @@ import * as dotenv from 'dotenv';
 import { JwtStrategy } from './jwt.strategy';
 import { HttpModule } from '@nestjs/axios';
 import { KakaoStrategy } from './kakao.strategy';
-import { ProfilePictureModule } from 'src/file/profilePicture/profile-picture.module';
+import { ProfilePictureModule } from 'src/file/profile-picture/profile-picture.module';
 
 dotenv.config();
 

@@ -5,7 +5,7 @@ import { typeOrmConfig } from './configs/typeorm.config';
 import { GlobalModule } from './global.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { ProfilePictureModule } from './file/profilePicture/profile-picture.module';
+import { ProfilePictureModule } from './file/profile-picture/profile-picture.module';
 import { AttachmentModule } from './file/attachment/attachment.module';
 
 @Module({

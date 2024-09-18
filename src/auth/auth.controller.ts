@@ -8,7 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './get-user.decorator';
 import { UserResponseDto } from '../user/dto/user-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
-import { ProfilePictureService } from 'src/file/profilePicture/profile-picture.service';
+import { ProfilePictureService } from 'src/file/profile-picture/profile-picture.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 
