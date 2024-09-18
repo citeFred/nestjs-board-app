@@ -8,7 +8,7 @@ import { Attachment } from './entities/attachment.entity';
 
 @Injectable()
 export class AttachmentUploadService {
-  private uploadPath = path.join(__dirname, '../..', 'public', 'uploads', 'attachment'); 
+  private uploadPath = path.join(process.cwd(), 'public', 'uploads', 'attachment'); 
   
   constructor(
     @InjectRepository(Attachment)
@@ -29,7 +29,7 @@ export class AttachmentUploadService {
   async uploadFile(file: Express.Multer.File) {
     const uniqueFilename = `${uuidv4()}-${file.originalname}`;
     const filePath = path.join(this.uploadPath, uniqueFilename);
-    const fileUrl = `http://localhost:${process.env.SERVER_PORT}/uploads/attachment/${uniqueFilename}`;
+    const fileUrl = `http://localhost:${process.env.SERVER_PORT}/files/uploads/attachment/${uniqueFilename}`;
 
     try {
       await fs.writeFile(filePath, file.buffer); // 파일 저장

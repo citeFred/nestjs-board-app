@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany } from "typeorm";
 import { Article } from "src/article/entities/article.entity";
 import { UserRole } from "./user-role.enum";
 import { BaseEntity } from "src/common/base.entity";
-import { ProfilePicture } from "src/file/profilePicture/entities/profile-picture.entity";
+import { ProfilePicture } from "src/file/profile-picture/entities/profile-picture.entity";
 
 @Entity()
 export class User extends BaseEntity{

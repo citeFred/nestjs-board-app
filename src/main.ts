@@ -18,8 +18,8 @@ async function bootstrap() {
     credentials: true,  // 필요한 경우 쿠키를 포함한 요청 허용
   });
 
-  app.useStaticAssets(path.join(__dirname, '..', 'public', 'uploads'), {
-    prefix: '/uploads/', // 클라이언트에서 접근할 URL 경로
+  app.useStaticAssets(path.join(process.cwd(), 'public'), {
+    prefix: '/files/'
   });
   
   await app.listen(process.env.SERVER_PORT);

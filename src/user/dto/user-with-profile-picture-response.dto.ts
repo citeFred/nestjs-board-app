@@ -1,4 +1,4 @@
-import { ProfilePictureResponseDto } from "src/file/profilePicture/dto/profile-picture-response.dto";
+import { ProfilePictureResponseDto } from "src/file/profile-picture/dto/profile-picture-response.dto";
 import { UserRole } from "../entities/user-role.enum";
 import { User } from "../entities/user.entity";
 

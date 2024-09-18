@@ -35,13 +35,13 @@ export class ArticleController {
         @UploadedFile() file: Express.Multer.File
     ): Promise<ApiResponse<ArticleWithAttachmentAndUserResponseDto>> {
         this.logger.verbose(`User ${user.username} creating a new Article. Data: ${JSON.stringify(createArticleRequestDto)}`);
-        const article = await this.articleService.createArticle(createArticleRequestDto, user);
+        const newArticle = await this.articleService.createArticle(createArticleRequestDto, user);
 
         if (file) {
-            await this.attachmentService.uploadArticleFiles(file, article);
+            await this.attachmentService.uploadArticleFiles(file, newArticle);
         }
 
-        const articleDto = new ArticleWithAttachmentAndUserResponseDto(article);
+        const articleDto = new ArticleWithAttachmentAndUserResponseDto(newArticle);
         this.logger.verbose(`Article created successfully: ${JSON.stringify(articleDto)}`);
         return new ApiResponse(true, 201, 'Article created successfully', articleDto);
     }
@@ -51,8 +51,8 @@ export class ArticleController {
     @Roles(UserRole.USER)
     async getAllArticles(): Promise<ApiResponse<ArticleResponseDto[]>> {
         this.logger.verbose('Retrieving all Articles');
-        const articles = await this.articleService.getAllArticles();
-        const articleDtos = articles.map(article => new ArticleResponseDto(article));
+        const foundArticles = await this.articleService.getAllArticles();
+        const articleDtos = foundArticles.map(foundArticle => new ArticleResponseDto(foundArticle));
         this.logger.verbose(`All articles retrieved successfully: ${JSON.stringify(articleDtos)}`);
         return new ApiResponse(true, 200, 'All articles retrieved successfully', articleDtos);
     }
@@ -64,10 +64,10 @@ export class ArticleController {
         @Query('limit') limit: number = 10
     ): Promise<ApiResponse<ArticlePaginatedResponseDto>> {
         this.logger.verbose(`Retrieving paginated articles: page ${page}, limit ${limit}`);
-        const paginatedResponse = await this.articleService.getPaginatedArticles(page, limit);
+        const paginatedArticles = await this.articleService.getPaginatedArticles(page, limit);
         this.logger.verbose(`Paginated articles retrieved successfully`);
         
-        return new ApiResponse(true, 200, 'Paginated articles retrieved successfully', paginatedResponse);
+        return new ApiResponse(true, 200, 'Paginated articles retrieved successfully', paginatedArticles);
     }
     
     
@@ -78,8 +78,8 @@ export class ArticleController {
         @GetUser() user: User
     ): Promise<ApiResponse<ArticleResponseDto[]>> {
         this.logger.verbose(`User ${user.username} retrieving their Articles`);
-        const articles = await this.articleService.getMyAllArticles(user);
-        const articleDtos = articles.map(article => new ArticleResponseDto(article));
+        const foundArticles = await this.articleService.getMyAllArticles(user);
+        const articleDtos = foundArticles.map(foundArticle => new ArticleResponseDto(foundArticle));
         this.logger.verbose(`User articles retrieved successfully: ${JSON.stringify(articleDtos)}`);
         return new ApiResponse(true, 200, 'User articles retrieved successfully', articleDtos);
     }
@@ -88,10 +88,10 @@ export class ArticleController {
     @Get('/:id')
     async getArticleById(
         @Param('id') id: number
-    ): Promise<ApiResponse<ArticleResponseDto>> {
+    ): Promise<ApiResponse<ArticleWithAttachmentAndUserResponseDto>> {
         this.logger.verbose(`Retrieving Article with ID ${id}`);
-        const article = await this.articleService.getArticleById(id);
-        const articleDto = new ArticleResponseDto(article);
+        const foundArticle = await this.articleService.getArticleById(id);
+        const articleDto = new ArticleWithAttachmentAndUserResponseDto(foundArticle);
         this.logger.verbose(`Article retrieved successfully: ${JSON.stringify(articleDto)}`);
         return new ApiResponse(true, 200, 'Article retrieved successfully', articleDto);
     }
@@ -102,8 +102,8 @@ export class ArticleController {
         @Query('author') author: string
     ): Promise<ApiResponse<ArticleResponseDto[]>> {
         this.logger.verbose(`Searching Articles by author ${author}`);
-        const articles = await this.articleService.getArticlesByAuthor(author);
-        const articleDtos = articles.map(article => new ArticleResponseDto(article));
+        const foundArticles = await this.articleService.getArticlesByAuthor(author);
+        const articleDtos = foundArticles.map(foundArticle => new ArticleResponseDto(foundArticle));
         this.logger.verbose(`Articles retrieved by author successfully: ${JSON.stringify(articleDtos)}`);
         return new ApiResponse(true, 200, 'Articles retrieved by author successfully', articleDtos);
     }

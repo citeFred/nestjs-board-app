@@ -8,8 +8,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ProfilePictureUploadService {
-  private uploadPath = path.join(__dirname, '../..', 'public', 'uploads', 'profile'); 
-  
+  private uploadPath = path.join(process.cwd(), 'public', 'uploads', 'profile'); 
+
   constructor(
     @InjectRepository(ProfilePicture)
     private readonly profilePictureRepository: Repository<ProfilePicture>
@@ -29,7 +29,7 @@ export class ProfilePictureUploadService {
   async uploadProfilePicture(file: Express.Multer.File) {
     const uniqueFilename = `${uuidv4()}-${file.originalname}`;
     const filePath = path.join(this.uploadPath, uniqueFilename);
-    const fileUrl = `http://localhost:${process.env.SERVER_PORT}/uploads/profile/${uniqueFilename}`;
+    const fileUrl = `http://localhost:${process.env.SERVER_PORT}/files/uploads/profile/${uniqueFilename}`;
 
     try {
       await fs.writeFile(filePath, file.buffer); // 파일 저장
