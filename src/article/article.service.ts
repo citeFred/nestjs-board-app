@@ -23,14 +23,14 @@ export class ArticleService {
     async createArticle(createArticleRequestDto: CreateArticleRequestDto, user: User): Promise<Article> {
         this.logger.verbose(`User ${user.username} is creating a new Article with title: ${createArticleRequestDto.title}`);
         const { title, contents } = createArticleRequestDto;
-        const Article = this.articleRepository.create({
+        const newArticle = this.articleRepository.create({
           author: user.username,
           title,
           contents,
           status: ArticleStatus.PUBLIC,
           user,
         });
-        const savedArticle = await this.articleRepository.save(Article);
+        const savedArticle = await this.articleRepository.save(newArticle);
         this.logger.verbose(`Article created successfully: ${JSON.stringify(savedArticle)}`);
         return savedArticle;
     }
@@ -38,9 +38,9 @@ export class ArticleService {
     // 전체 게시글 조회
     async getAllArticles(): Promise<Article[]> {
         this.logger.verbose('Retrieving all Article');
-        const articles = await this.articleRepository.find();
-        this.logger.verbose(`All articles retrieved successfully: ${JSON.stringify(articles)}`);
-        return articles;
+        const foundArticles = await this.articleRepository.find();
+        this.logger.verbose(`All articles retrieved successfully: ${JSON.stringify(foundArticles)}`);
+        return foundArticles;
     }
 
     // 페이징 추가 게시글 조회 기능
@@ -48,29 +48,27 @@ export class ArticleService {
         this.logger.verbose(`Retrieving paginated articles: page ${page}, limit ${limit}`);
         const skip: number = (page - 1) * limit;
     
-        const [articles, totalCount] = await this.articleRepository.createQueryBuilder("article")
-        .leftJoinAndSelect("article.attachments", "attachment")
-        .leftJoinAndSelect("article.user", "user")
-        .skip(skip)
-        .take(limit)
-        .orderBy("article.createdAt", "DESC") // 내림차순
-        .getManyAndCount();
+        const [foundArticles, totalCount] = await this.articleRepository.createQueryBuilder("article")
+            .leftJoinAndSelect("article.attachments", "attachment")
+            .leftJoinAndSelect("article.user", "user")
+            .skip(skip)
+            .take(limit)
+            .orderBy("article.createdAt", "DESC") // 내림차순
+            .getManyAndCount();
     
-        const articleDtos = articles.map(article => new ArticleWithAttachmentAndUserResponseDto(article));
+        const articleDtos = foundArticles.map(foundArticle => new ArticleWithAttachmentAndUserResponseDto(foundArticle));
         this.logger.verbose(`Paginated articles retrieved successfully`);
         return new ArticlePaginatedResponseDto(articleDtos, totalCount);
     }
     
-    
-
     // 나의 게시글 조회
     async getMyAllArticles(user: User): Promise<Article[]> {
         this.logger.verbose(`User ${user.username} is retrieving their own Articles`);
-        const articles = await this.articleRepository.createQueryBuilder('article')
+        const foundArticle = await this.articleRepository.createQueryBuilder('article')
             .where('article.userId = :userId', { userId : user.id }) 
             .getMany(); 
-        this.logger.verbose(`User ${user.username} retrieved their own Articles: ${JSON.stringify(articles)}`);
-        return articles; 
+        this.logger.verbose(`User ${user.username} retrieved their own Articles: ${JSON.stringify(foundArticle)}`);
+        return foundArticle; 
     }
 
     // 특정 번호의 게시글 조회
@@ -113,8 +111,8 @@ export class ArticleService {
     async updateArticleStatusById(id: number, status: ArticleStatus, user: User): Promise<void> {
         this.logger.verbose(`User ${user.username} is attempting to update the status of Article with ID ${id} to ${status}`);
         if (user.role === UserRole.ADMIN) {
-            const result = await this.articleRepository.update(id, { status });
-            if (result.affected === 0) {
+            const updatedArticle = await this.articleRepository.update(id, { status });
+            if (updatedArticle.affected === 0) {
                 this.logger.warn(`No Article found to update with ID ${id}`);
                 throw new NotFoundException(`There's no updated record or Article with ID ${id} not found`);
             }
