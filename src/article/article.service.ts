@@ -74,7 +74,12 @@ export class ArticleService {
     // 특정 번호의 게시글 조회
     async getArticleById(id: number): Promise<Article> {
         this.logger.verbose(`Retrieving Article with ID ${id}`);
-        const foundArticle = await this.articleRepository.findOneBy({id});
+        const foundArticle = await this.articleRepository.createQueryBuilder("article")
+            .leftJoinAndSelect("article.attachments", "attachment")
+            .leftJoinAndSelect("article.user", "user")
+            .where("article.id = :id", { id })
+            .getOne();
+
         if (!foundArticle) {
             this.logger.warn(`Article with ID ${id} not found`);
             throw new NotFoundException(`Article with ID ${id} not found`);
