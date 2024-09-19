@@ -49,7 +49,6 @@ export class ArticleService {
         const skip: number = (page - 1) * limit;
     
         const [foundArticles, totalCount] = await this.articleRepository.createQueryBuilder("article")
-            .leftJoinAndSelect("article.attachments", "attachment")
             .leftJoinAndSelect("article.user", "user")
             .skip(skip)
             .take(limit)
