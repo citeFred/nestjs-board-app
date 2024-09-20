@@ -23,6 +23,6 @@ export class Attachment extends BaseEntity {
     @Column()
     url: string;
 
-    @ManyToOne(() => Article, article => article.attachments, { eager: false })
+    @ManyToOne(() => Article, article => article.attachments, { eager: false, onDelete: 'CASCADE' })
     article: Article;
 }
