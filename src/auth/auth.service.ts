@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,8 @@ export class AuthService {
         @InjectRepository(User)
         private usersRepository: Repository<User>,
         private jwtService: JwtService,
-        private httpService: HttpService
+        private httpService: HttpService,
+        private userService: UserService
     ){}
 
     // 회원 가입
@@ -62,11 +64,15 @@ export class AuthService {
                 this.logger.warn(`Failed login attempt for email: ${email}`);
                 throw new UnauthorizedException('Incorrect email or password.');
             }
+
+            // 프로필 사진 포함하여 사용자 정보 가져오기
+            const userWithFiles = await this.userService.findOneByIdWithFiles(existingUser.id);
+
             // [1] JWT 토큰 생성 (Secret + Payload)
-            const jwtToken = await this.generateJwtToken(existingUser);
+            const jwtToken = await this.generateJwtToken(userWithFiles);
 
             // [2] 사용자 정보 반환
-            return { jwtToken, user: existingUser };
+            return { jwtToken, user: userWithFiles };
         } catch (error) {
             this.logger.error('Signin failed', error.stack);
             throw error;
@@ -175,11 +181,19 @@ export class AuthService {
 
     // JWT 생성 공통 메서드
     async generateJwtToken(user: User): Promise<string> {
+        let profilePictureUrl: string | null = null;
+        
+        if (user.profilePictures && user.profilePictures.length > 0) {
+            await user.profilePictures;
+            const lastPicture = user.profilePictures[user.profilePictures.length - 1]; // 배열의 마지막 요소
+            profilePictureUrl = lastPicture.url; // URL 설정
+        }
         // [1] JWT 토큰 생성 (Secret + Payload)
         const payload = { 
             email: user.email,
             userId: user.id,
-            role: user.role
+            role: user.role,
+            profilePictureUrl
             };
         const accessToken = await this.jwtService.sign(payload);
         this.logger.debug(`Generated JWT Token: ${accessToken}`);
