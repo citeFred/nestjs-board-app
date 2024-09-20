@@ -10,6 +10,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { HttpModule } from '@nestjs/axios';
 import { KakaoStrategy } from './kakao.strategy';
 import { ProfilePictureModule } from 'src/file/profile-picture/profile-picture.module';
+import { UserModule } from 'src/user/user.module';
 
 dotenv.config();
 
@@ -24,7 +25,8 @@ dotenv.config();
     }),
     TypeOrmModule.forFeature([User]),
     HttpModule,
-    ProfilePictureModule
+    ProfilePictureModule,
+    UserModule
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, KakaoStrategy],
