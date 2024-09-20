@@ -137,12 +137,19 @@ export class ArticleController {
 
     // 특정 번호의 게시글의 전체 수정
     @Put('/:id')
+    @UseInterceptors(FileInterceptor('articleFile'))
     async updateArticleById(
         @Param('id') id: number,
-        @Body() updateArticleRequestDto: UpdateArticleRequestDto
+        @Body() updateArticleRequestDto: UpdateArticleRequestDto,
+        @UploadedFile() file: Express.Multer.File
     ): Promise<ApiResponse<void>> {
         this.logger.verbose(`Updating Article with ID ${id}`);
-        await this.articleService.updateArticleById(id, updateArticleRequestDto);
+        const updatedArticle = await this.articleService.updateArticleById(id, updateArticleRequestDto);
+
+        if (file) {
+            await this.attachmentService.uploadArticleFiles(file, updatedArticle);
+        }
+
         this.logger.verbose(`Article updated successfully with ID ${id}`);
         return new ApiResponse(true, 200, 'Article updated successfully');
     }
