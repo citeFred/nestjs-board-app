@@ -128,7 +128,7 @@ export class ArticleService {
     }
 
     // 특정 번호의 게시글의 전체 수정
-    async updateArticleById(id: number, updateArticleRequestDto: UpdateArticleRequestDto): Promise<void> {
+    async updateArticleById(id: number, updateArticleRequestDto: UpdateArticleRequestDto): Promise<Article> {
         this.logger.verbose(`Attempting to update Article with ID ${id}`);
         
         const foundArticle = await this.getArticleById(id);
@@ -141,5 +141,6 @@ export class ArticleService {
     
         await this.articleRepository.save(foundArticle);
         this.logger.verbose(`Article with ID ${id} updated successfully: ${JSON.stringify(foundArticle)}`);
+        return foundArticle
     }
 }
