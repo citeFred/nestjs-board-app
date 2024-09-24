@@ -66,7 +66,7 @@ export class AuthService {
             }
 
             // 프로필 사진 포함하여 사용자 정보 가져오기
-            const userWithFiles = await this.userService.findOneByIdWithFiles(existingUser.id);
+            const userWithFiles = await this.userService.getUserByIdWithProfile(existingUser.id);
 
             // [1] JWT 토큰 생성 (Secret + Payload)
             const jwtToken = await this.generateJwtToken(userWithFiles);
