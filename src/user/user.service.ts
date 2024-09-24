@@ -1,8 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateUserRequestDto } from './dto/update-user-request.dto';
+import { ProfilePictureService } from 'src/file/profile-picture/profile-picture.service';
 
 @Injectable()
 export class UserService {
@@ -11,6 +12,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private profilePictureService: ProfilePictureService
   ) {}
 
   async findOneById(id: number): Promise<User> {
@@ -33,17 +35,21 @@ export class UserService {
     return foundUser;
   }
 
-  async updateUser(id: number, updateUserRequestDto: UpdateUserRequestDto, file?: Express.Multer.File): Promise<User> {
+  async updateUser(id: number, updateUserRequestDto: UpdateUserRequestDto, logginedUser: User, file?: Express.Multer.File): Promise<User> {
     this.logger.verbose(`Attempting to update User with ID ${id}`);
 
     const foundUser = await this.getUserByIdWithProfile(id);
     const { postalCode, address, detailAddress } = updateUserRequestDto;
 
-    if (!foundUser) {
-        throw new NotFoundException(`User with ID ${id} not found`);
+    if (foundUser.id !== logginedUser.id) {
+        this.logger.warn(`User ${logginedUser.username} attempted to update User details ${id} without permission`);
+        throw new UnauthorizedException(`You do not have permission to update this User`);
     }
 
-    // 수정할 필드 업데이트
+    if (file) {
+        await this.profilePictureService.uploadProfilePicture(file, foundUser);
+    }
+
     foundUser.postalCode = postalCode || foundUser.postalCode;
     foundUser.address = address || foundUser.address;
     foundUser.detailAddress = detailAddress || foundUser.detailAddress;
