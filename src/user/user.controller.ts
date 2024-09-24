@@ -7,6 +7,8 @@ import { UserWithProfilePictureResponseDto } from './dto/user-with-profile-pictu
 import { UpdateUserRequestDto } from './dto/update-user-request.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProfilePictureService } from 'src/file/profile-picture/profile-picture.service';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from "src/user/entities/user.entity";
 
 @Controller('api/users')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -19,7 +21,7 @@ export class UserController {
     // 특정 번호의 회원 정보 조회
     @Get(':id')
     async getUserById(
-        @Param('id') id: number
+        @Param('id') id: number,
     ): Promise<ApiResponse<UserWithProfilePictureResponseDto>> {
         this.logger.verbose(`Retrieving User with ID ${id}`);
         const user = await this.userService.getUserByIdWithProfile(id);
@@ -34,15 +36,11 @@ export class UserController {
     async updateUser(
         @Param('id') id: number,
         @Body() updateUserRequestDto: UpdateUserRequestDto,
-        @UploadedFile() file?: Express.Multer.File
+        @GetUser() logginedUser: User,
+        @UploadedFile() file?: Express.Multer.File,
     ): Promise<ApiResponse<UserWithProfilePictureResponseDto>> {
-        this.logger.verbose(`Updating User with ID ${id}`);
-        const updatedUser = await this.userService.updateUser(id, updateUserRequestDto);
-
-        if (file) {
-            await this.profilePictureService.uploadProfilePicture(file, updatedUser);
-        }
-
+        this.logger.verbose(`User ${logginedUser.username} updating User details with ID ${id}`);
+        const updatedUser = await this.userService.updateUser(id, updateUserRequestDto, logginedUser, file);
         const userDto = new UserWithProfilePictureResponseDto(updatedUser);
         this.logger.verbose(`User updated successfully: ${JSON.stringify(userDto)}`);
         return new ApiResponse(true, 200, 'User updated successfully', userDto);
