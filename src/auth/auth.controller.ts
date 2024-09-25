@@ -8,15 +8,14 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './get-user.decorator';
 import { UserResponseDto } from '../user/dto/user-response.dto';
 import { ApiResponse } from 'src/common/api-response.dto';
-import { ProfilePictureService } from 'src/file/profile-picture/profile-picture.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 
 @Controller('api/auth')
 export class AuthController {
-    private readonly logger = new Logger(AuthController.name); // Logger 인스턴스
+    private readonly logger = new Logger(AuthController.name);
 
-    constructor(private authService: AuthService, private profilePictureService: ProfilePictureService){}
+    constructor(private authService: AuthService){}
 
     // 회원 가입 기능
     @Post('/signup')
@@ -26,12 +25,7 @@ export class AuthController {
         @UploadedFile() file: Express.Multer.File
     ): Promise<ApiResponse<UserResponseDto>> {
         this.logger.verbose(`Attempting to sign up user with email: ${signUpRequestDto.email}`);
-        const user = await this.authService.signUp(signUpRequestDto);
-
-        if (file) {
-            await this.profilePictureService.uploadProfilePicture(file, user);
-        }
-        
+        const user = await this.authService.signUp(signUpRequestDto, file);
         const userResponseDto = new UserResponseDto(user);
         this.logger.verbose(`User signed up successfully: ${JSON.stringify(userResponseDto)}`);
         return new ApiResponse(true, 201, 'User signed up successfully', userResponseDto);
