@@ -23,6 +23,6 @@ export class ProfilePicture extends BaseEntity {
     @Column()
     url: string;
 
-    @ManyToOne(() => User, user => user.profilePictures, { eager: false })
+    @ManyToOne(() => User, user => user.profilePictures, { eager: false, onDelete: 'CASCADE' })
     user: User;
 }
