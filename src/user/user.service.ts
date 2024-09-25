@@ -19,7 +19,7 @@ export class UserService {
     return this.userRepository.findOneBy({id});
   }
 
-  // 회원정보+파일 정보까지 가져오는 별도 메서드(QueryBuilder)
+  // 회원정보+파일 정보 조회
   async getUserByIdWithProfile(id: number): Promise<User> {
     this.logger.verbose(`Retrieving User with ID ${id}`);
     const foundUser = await this.userRepository.createQueryBuilder('user')
@@ -35,28 +35,26 @@ export class UserService {
     return foundUser;
   }
 
+  // 회원정보 수정
   async updateUser(id: number, updateUserRequestDto: UpdateUserRequestDto, logginedUser: User, file?: Express.Multer.File): Promise<User> {
     this.logger.verbose(`Attempting to update User with ID ${id}`);
 
     const foundUser = await this.getUserByIdWithProfile(id);
-    const { postalCode, address, detailAddress } = updateUserRequestDto;
 
     if (foundUser.id !== logginedUser.id) {
         this.logger.warn(`User ${logginedUser.username} attempted to update User details ${id} without permission`);
         throw new UnauthorizedException(`You do not have permission to update this User`);
     }
 
+    Object.assign(foundUser, updateUserRequestDto)
+
     if (file) {
         await this.profilePictureService.uploadProfilePicture(file, foundUser);
     }
 
-    foundUser.postalCode = postalCode || foundUser.postalCode;
-    foundUser.address = address || foundUser.address;
-    foundUser.detailAddress = detailAddress || foundUser.detailAddress;
+    const updatedUser = await this.userRepository.save(foundUser);
 
-    await this.userRepository.save(foundUser);
-    this.logger.verbose(`User with ID ${id} updated successfully: ${JSON.stringify(foundUser)}`);
-
-    return foundUser;
+    this.logger.verbose(`User with ID ${id} updated successfully: ${JSON.stringify(updatedUser)}`);
+    return updatedUser;
   }
 }
