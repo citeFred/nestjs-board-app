@@ -9,29 +9,37 @@ import { User } from "src/user/entities/user.entity";
 import { UserRole } from 'src/user/entities/user-role.enum';
 import { ArticlePaginatedResponseDto } from './dto/article-paginated-response.dto';
 import { ArticleWithAttachmentAndUserResponseDto } from './dto/article-with-attachment-user-response.dto';
+import { AttachmentService } from 'src/file/attachment/attachment.service';
 
 @Injectable()
 export class ArticleService {
-    private readonly logger = new Logger(ArticleService.name); // Logger 인스턴스 생성
+    private readonly logger = new Logger(ArticleService.name);
 
     constructor(
         @InjectRepository(Article)
-        private articleRepository: Repository<Article>
-    ){}
+        private articleRepository: Repository<Article>,
+        private attachmentService: AttachmentService
+    ) {}
         
     // 게시글 작성
-    async createArticle(createArticleRequestDto: CreateArticleRequestDto, user: User): Promise<Article> {
-        this.logger.verbose(`User ${user.username} is creating a new Article with title: ${createArticleRequestDto.title}`);
-        const { title, contents } = createArticleRequestDto;
-        const newArticle = this.articleRepository.create({
-          author: user.username,
-          title,
-          contents,
-          status: ArticleStatus.PUBLIC,
-          user,
-        });
+    async createArticle(createArticleRequestDto: CreateArticleRequestDto, logginedUser: User, file?: Express.Multer.File): Promise<Article> {
+        this.logger.verbose(`User ${logginedUser.username} is creating a new Article with title: ${createArticleRequestDto.title}`);
+        
+        const newArticle = this.articleRepository.create(
+            Object.assign({}, createArticleRequestDto, { 
+                author: logginedUser.username,
+                status: ArticleStatus.PUBLIC,
+            })
+        );
+    
+        if (file) {
+            await this.attachmentService.uploadArticleFiles(file, newArticle);
+        }
+    
         const savedArticle = await this.articleRepository.save(newArticle);
+    
         this.logger.verbose(`Article created successfully: ${JSON.stringify(savedArticle)}`);
+        this.logger.debug(`Article details: ${JSON.stringify(savedArticle)}`);
         return savedArticle;
     }
 
@@ -128,19 +136,25 @@ export class ArticleService {
     }
 
     // 특정 번호의 게시글의 전체 수정
-    async updateArticleById(id: number, updateArticleRequestDto: UpdateArticleRequestDto): Promise<Article> {
+    async updateArticleById(id: number, updateArticleRequestDto: UpdateArticleRequestDto, logginedUser: User, file?: Express.Multer.File): Promise<Article> {
         this.logger.verbose(`Attempting to update Article with ID ${id}`);
         
         const foundArticle = await this.getArticleById(id);
-        const { author, title, contents, status } = updateArticleRequestDto;
+
+        if (foundArticle.user.id !== logginedUser.id) {
+            this.logger.warn(`User ${logginedUser.username} attempted to update Article details ${id} without permission`);
+            throw new UnauthorizedException(`You do not have permission to update this Article`);
+        }
+
+        Object.assign(foundArticle, updateArticleRequestDto)
+
+        if (file) {
+            await this.attachmentService.uploadArticleFiles(file, foundArticle);
+        }
     
-        foundArticle.author = author;
-        foundArticle.title = title;
-        foundArticle.contents = contents;
-        foundArticle.status = status;
-    
-        await this.articleRepository.save(foundArticle);
-        this.logger.verbose(`Article with ID ${id} updated successfully: ${JSON.stringify(foundArticle)}`);
-        return foundArticle
+        const updatedArticle = await this.articleRepository.save(foundArticle);
+
+        this.logger.verbose(`Article with ID ${id} updated successfully: ${JSON.stringify(updatedArticle)}`);
+        return updatedArticle;
     }
 }
