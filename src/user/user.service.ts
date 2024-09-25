@@ -42,8 +42,8 @@ export class UserService {
     const foundUser = await this.getUserByIdWithProfile(id);
 
     if (foundUser.id !== logginedUser.id) {
-        this.logger.warn(`User ${logginedUser.username} attempted to update User details ${id} without permission`);
-        throw new UnauthorizedException(`You do not have permission to update this User`);
+      this.logger.warn(`User ${logginedUser.username} attempted to update User details ${id} without permission`);
+      throw new UnauthorizedException(`You do not have permission to update this User`);
     }
 
     Object.assign(foundUser, updateUserRequestDto)
@@ -56,5 +56,17 @@ export class UserService {
 
     this.logger.verbose(`User with ID ${id} updated successfully: ${JSON.stringify(updatedUser)}`);
     return updatedUser;
+  }
+
+  // 회원 탈퇴
+  async deleteUserById(id: number, logginedUser: User): Promise<void> {
+    this.logger.verbose(`User ${logginedUser.username} is attempting to delete User with ID ${id}`);
+    const foundUser = await this.findOneById(id);
+    if (foundUser.id !== logginedUser.id) {
+        this.logger.warn(`User ${logginedUser.username} attempted to delete User ID ${id} without permission`);
+        throw new UnauthorizedException(`You do not have permission to delete this User`);
+    }
+    await this.userRepository.remove(foundUser);
+    this.logger.verbose(`User with ID ${id} deleted by User ${logginedUser.username}`);
   }
 }
