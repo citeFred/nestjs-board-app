@@ -10,6 +10,7 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { UserService } from 'src/user/user.service';
+import { ProfilePictureService } from 'src/file/profile-picture/profile-picture.service';
 
 @Injectable()
 export class AuthService {
@@ -20,35 +21,32 @@ export class AuthService {
         private usersRepository: Repository<User>,
         private jwtService: JwtService,
         private httpService: HttpService,
-        private userService: UserService
-    ){}
+        private userService: UserService,
+        private profilePictureService: ProfilePictureService
+    ) {}
 
     // 회원 가입
-    async signUp(signUpRequestDto: SignUpRequestDto): Promise<User> {
-        const { username, password, email, role, postalCode, address, detailAddress } = signUpRequestDto;
-        this.logger.verbose(`Attempting to sign up user with email: ${email}`);
+    async signUp(signUpRequestDto: SignUpRequestDto, file?: Express.Multer.File): Promise<User> {
+        this.logger.verbose(`Attempting to sign up user with email: ${signUpRequestDto.email}`);
 
         // 이메일 중복 확인
-        await this.checkEmailExists(email);
+        await this.checkEmailExists(signUpRequestDto.email);
 
         // 비밀번호 해싱
-        const hashedPassword = await this.hashPassword(password);
+        const hashedPassword = await this.hashPassword(signUpRequestDto.password);
 
-        const newUser = this.usersRepository.create({
-            username,
-            password: hashedPassword, // 해싱된 비밀번호 사용
-            email,
-            role,
-            postalCode,
-            address,
-            detailAddress,
-        });
+        const newUser = this.usersRepository.create(
+            Object.assign({}, signUpRequestDto, { password: hashedPassword })
+        );
+
+        if (file) {
+            await this.profilePictureService.uploadProfilePicture(file, newUser);
+        }
 
         const savedUser = await this.usersRepository.save(newUser);
 
-        this.logger.verbose(`User signed up successfully with email: ${email}`);
+        this.logger.verbose(`User signed up successfully with email: ${savedUser.email}`);
         this.logger.debug(`User details: ${JSON.stringify(savedUser)}`);
-
         return savedUser;
     }
 
