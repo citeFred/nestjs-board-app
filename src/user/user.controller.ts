@@ -6,7 +6,6 @@ import { ApiResponse } from 'src/common/api-response.dto';
 import { UserWithProfilePictureResponseDto } from './dto/user-with-profile-picture-response.dto';
 import { UpdateUserRequestDto } from './dto/update-user-request.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ProfilePictureService } from 'src/file/profile-picture/profile-picture.service';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from "src/user/entities/user.entity";
 
@@ -15,8 +14,7 @@ import { User } from "src/user/entities/user.entity";
 export class UserController {
     private readonly logger = new Logger(UserController.name);
 
-    constructor(private userService: UserService, private profilePictureService: ProfilePictureService
-    ){}
+    constructor(private userService: UserService){}
 
     // 특정 번호의 회원 정보 조회
     @Get(':id')
@@ -24,8 +22,8 @@ export class UserController {
         @Param('id') id: number,
     ): Promise<ApiResponse<UserWithProfilePictureResponseDto>> {
         this.logger.verbose(`Retrieving User with ID ${id}`);
-        const user = await this.userService.getUserByIdWithProfile(id);
-        const userDto = new UserWithProfilePictureResponseDto(user);
+        const foundUser = await this.userService.getUserByIdWithProfile(id);
+        const userDto = new UserWithProfilePictureResponseDto(foundUser);
         this.logger.verbose(`User retrieved successfully: ${JSON.stringify(userDto)}`);
         return new ApiResponse(true, 200, 'User retrieved successfully', userDto);
     }
@@ -41,8 +39,8 @@ export class UserController {
     ): Promise<ApiResponse<UserWithProfilePictureResponseDto>> {
         this.logger.verbose(`User ${logginedUser.username} updating User details with ID ${id}`);
         const updatedUser = await this.userService.updateUser(id, updateUserRequestDto, logginedUser, file);
-        const userDto = new UserWithProfilePictureResponseDto(updatedUser);
-        this.logger.verbose(`User updated successfully: ${JSON.stringify(userDto)}`);
-        return new ApiResponse(true, 200, 'User updated successfully', userDto);
+        const userWithProfilePictureResponseDto = new UserWithProfilePictureResponseDto(updatedUser);
+        this.logger.verbose(`User updated successfully: ${JSON.stringify(userWithProfilePictureResponseDto)}`);
+        return new ApiResponse(true, 200, 'User updated successfully', userWithProfilePictureResponseDto);
     }
 }
