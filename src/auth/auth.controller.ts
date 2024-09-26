@@ -25,8 +25,8 @@ export class AuthController {
         @UploadedFile() file: Express.Multer.File
     ): Promise<ApiResponse<UserResponseDto>> {
         this.logger.verbose(`Attempting to sign up user with email: ${signUpRequestDto.email}`);
-        const user = await this.authService.signUp(signUpRequestDto, file);
-        const userResponseDto = new UserResponseDto(user);
+        const newUser = await this.authService.signUp(signUpRequestDto, file);
+        const userResponseDto = new UserResponseDto(newUser);
         this.logger.verbose(`User signed up successfully: ${JSON.stringify(userResponseDto)}`);
         return new ApiResponse(true, 201, 'User signed up successfully', userResponseDto);
     }
