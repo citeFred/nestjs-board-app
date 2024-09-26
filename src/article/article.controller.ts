@@ -51,7 +51,7 @@ export class ArticleController {
     }
 
     // 페이징 처리된 게시글 조회
-    @Get('/paginated')
+    @Get('paginated')
     async getPaginatedArticles(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10
@@ -64,7 +64,7 @@ export class ArticleController {
     }
     
     // 나의 게시글 조회 기능
-    @Get('/myarticles')
+    @Get('myarticles')
     async getMyAllArticles(
         @GetUser() user: User
     ): Promise<ApiResponse<ArticleResponseDto[]>> {
@@ -76,7 +76,7 @@ export class ArticleController {
     }
 
     // 특정 번호의 게시글 조회
-    @Get('/:id')
+    @Get(':id')
     async getArticleById(
         @Param('id') id: number
     ): Promise<ApiResponse<ArticleWithAttachmentAndUserResponseDto>> {
@@ -88,7 +88,7 @@ export class ArticleController {
     }
 
     // 특정 작성자의 게시글 조회
-    @Get('/search')
+    @Get('search')
     async getArticlesByAuthor(
         @Query('author') author: string
     ): Promise<ApiResponse<ArticleResponseDto[]>> {
@@ -100,7 +100,7 @@ export class ArticleController {
     }
 
     // 특정 번호의 게시글 삭제
-    @Delete('/:id')
+    @Delete(':id')
     @Roles(UserRole.USER)
     async deleteArticleById(
         @Param('id') id: number,
@@ -113,7 +113,7 @@ export class ArticleController {
     }
 
     // 특정 번호의 게시글의 일부 수정 (관리자가 부적절한 글을 비공개로 설정)
-    @Patch('/:id/status')
+    @Patch(':id/status')
     @Roles(UserRole.ADMIN)
     async updateArticleStatusById(
         @Param('id') id: number,
@@ -127,7 +127,7 @@ export class ArticleController {
     }
 
     // 특정 번호의 게시글의 전체 수정
-    @Put('/:id')
+    @Put(':id')
     @UseInterceptors(FileInterceptor('articleFile'))
     async updateArticleById(
         @Param('id') id: number,

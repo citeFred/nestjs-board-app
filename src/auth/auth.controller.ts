@@ -18,7 +18,7 @@ export class AuthController {
     constructor(private authService: AuthService){}
 
     // 회원 가입 기능
-    @Post('/signup')
+    @Post('signup')
     @UseInterceptors(FileInterceptor('profilePicture'))
     async signUp(
         @Body() signUpRequestDto: SignUpRequestDto,
@@ -32,7 +32,7 @@ export class AuthController {
     }
 
     // 로그인 기능
-    @Post('/signin')
+    @Post('signin')
     async signIn(
         @Body() signInRequestDto: SignInRequestDto,
         @Res() res: Response
@@ -54,7 +54,7 @@ export class AuthController {
     }
 
     // 인증된 회원이 들어갈 수 있는 테스트 URL 경로
-    @Post('/test')
+    @Post('test')
     @UseGuards(AuthGuard()) // @UseGuards : 핸들러는 지정한 인증 가드가 적용됨 -> AuthGuard()의 'jwt'는 기본값으로 생략가능
     async testForAuth(@GetUser() user: User): Promise<ApiResponse<UserResponseDto>> {
         this.logger.verbose(`Authenticated user accessing test route: ${user.email}`);
@@ -63,7 +63,7 @@ export class AuthController {
     }
 
     // 카카오 로그인 페이지 요청
-    @Get('/kakao')
+    @Get('kakao')
     @UseGuards(AuthGuard('kakao'))
     async kakaoLogin(@Req() req: Request) {
       // 이 부분은 Passport의 AuthGuard에 의해 카카오 로그인 페이지로 리다이렉트
