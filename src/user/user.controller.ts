@@ -46,7 +46,7 @@ export class UserController {
         return new ApiResponse(true, 200, 'User updated successfully', userWithProfilePictureResponseDto);
     }
 
-    // 특정 번호의 게시글 삭제
+    // 특정 번호의 회원 탈퇴
     @Delete(':id')
     @Roles(UserRole.USER)
     async deleteUserById(
