@@ -46,13 +46,13 @@ export class UserService {
       throw new UnauthorizedException(`You do not have permission to update this User`);
     }
 
-    Object.assign(foundUser, updateUserRequestDto)
+    const updatedUser = await this.userRepository.save(
+      Object.assign(foundUser, updateUserRequestDto)
+    );
 
     if (file) {
-        await this.profilePictureService.uploadProfilePicture(file, foundUser);
+        await this.profilePictureService.uploadProfilePicture(file, updatedUser);
     }
-
-    const updatedUser = await this.userRepository.save(foundUser);
 
     this.logger.verbose(`User with ID ${id} updated successfully: ${JSON.stringify(updatedUser)}`);
     return updatedUser;
