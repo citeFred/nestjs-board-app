@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Logger, Param, Patch, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Put, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/custom-role.guard';
@@ -31,7 +31,7 @@ export class UserController {
     }
 
     // 회원 정보 수정
-    @Patch(':id')
+    @Put(':id')
     @UseInterceptors(FileInterceptor('profilePicture'))
     async updateUser(
         @Param('id') id: number,
@@ -46,7 +46,7 @@ export class UserController {
         return new ApiResponse(true, 200, 'User updated successfully', userWithProfilePictureResponseDto);
     }
 
-    // 특정 번호의 게시글 삭제
+    // 특정 번호의 회원 탈퇴
     @Delete(':id')
     @Roles(UserRole.USER)
     async deleteUserById(

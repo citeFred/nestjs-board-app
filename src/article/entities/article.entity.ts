@@ -18,7 +18,7 @@ export class Article extends BaseEntity {
     @Column()
     status: ArticleStatus;
 
-    @ManyToOne(() => User, user => user.articles, { eager: true })
+    @ManyToOne(() => User, user => user.articles, { eager: true, onDelete: 'CASCADE' })
     user: User;
 
     @OneToMany(() => Attachment, attachment => attachment.article, { eager: true })
