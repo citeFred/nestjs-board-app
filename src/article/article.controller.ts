@@ -41,7 +41,7 @@ export class ArticleController {
 
     // 전체 게시글 조회 기능
     @Get('/')
-    @Roles(UserRole.USER)
+    @Roles(UserRole.ADMIN)
     async getAllArticles(): Promise<ApiResponse<ArticleResponseDto[]>> {
         this.logger.verbose('Retrieving all Articles');
         const foundArticles = await this.articleService.getAllArticles();
