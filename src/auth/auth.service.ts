@@ -188,6 +188,7 @@ export class AuthService {
         }
         // [1] JWT 토큰 생성 (Secret + Payload)
         const payload = { 
+            username: user.username,
             email: user.email,
             userId: user.id,
             role: user.role,
