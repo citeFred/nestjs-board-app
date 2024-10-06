@@ -9,9 +9,40 @@ NestJS(Typescript) + TypeORM 게시판 웹 서비스
 ## 🖥️ 프로젝트 소개 
 - 기본적인 게시판 NestJS 백엔드 서버를 구현해보는 프로젝트 입니다.
 - 개발 블로그를 통해 개념/과정을 상세히 확인 할 수 있습니다.
-<br>
 https://www.citefred.com/tags/nestjs
 <br>
+
+- `root/.env` 파일 작성이 필요합니다. 현재 AWS 연동 과정 진행으로 `RDS Bucket주소`, `AccessKey`, `SecretKey` 필요한 상태
+- 발급 과정은 블로그의 정리 내용을 참고하시길 바랍니다. https://www.citefred.com/nestjs/21
+```.env
+# DATABASE 설정 정보
+DB_HOST=본인의RDS주소
+DB_PORT=3306
+DB_USERNAME=본인의RDS계정명
+DB_PASSWORD=본인의RDS계정비밀번호
+DB_NAME=boardapp
+
+# JWT Secret Key
+JWT_SECRET=본인의JWT토큰암호화키
+JWT_EXPIRATION=36000
+
+# 서버
+SERVER_PORT=3000
+SERVER_HOST=localhost
+
+# 로깅
+LOG_LEVEL=info
+
+# Kakao Login API
+KAKAO_CLIENT_ID=본인의카카오클라이언트ID
+KAKAO_CALLBACK_URL=본인의카카오콜백URL
+
+# AWS Keys
+AWS_ACCESS_KEY_ID=본인의AWS_AccessKey
+AWS_SECRET_ACCESS_KEY=본인의AWS_SecretKey
+
+# 외부 API관련 Key 등 필요 시 추가
+```
 
 ## 🗄️ 서버 Github
 - Backend Server (현재 페이지)
