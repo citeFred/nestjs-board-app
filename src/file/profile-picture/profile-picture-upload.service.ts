@@ -15,17 +15,18 @@ export class ProfilePictureUploadService {
   // 프로필 사진 파일 업로드
   async uploadProfilePicture(file: Express.Multer.File) {
     try {
-      const fileUrl = await this.s3Service.uploadFile(file, 'your-bucket-name');
+      const fileUrl = await this.s3Service.uploadFile(file, 's3-bucket-boardapp');
       return {
         message: 'File uploaded successfully',
         url: fileUrl,
       };
     } catch (err) {
+      console.error('S3 Upload Error:', err);
       throw new HttpException('Failed to upload file', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  // 프로필 사진 파일 엔터티 데이터베이스에 저장
+  // 프로필 사진 엔터티 데이터베이스에 저장
   async save(file: ProfilePicture) {
     try {
       return await this.profilePictureRepository.save(file);
