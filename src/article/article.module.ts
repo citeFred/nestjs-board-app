@@ -3,15 +3,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ArticleService } from './article.service';
 import { Article } from './entities/article.entity';
 import { ArticleController } from './article.controller';
-import { AttachmentModule } from 'src/file/attachment/attachment.module';
+import { FileModule } from 'src/file/file.module';
+import { AttachmentService } from 'src/file/attachment/attachment.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Article]),
-    AttachmentModule,
+    FileModule,
   ],
   controllers: [ArticleController],
-  providers: [ArticleService],
+  providers: [ArticleService, AttachmentService],
   exports: [ArticleService],
 })
 export class ArticleModule {}
