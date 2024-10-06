@@ -1,7 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 import { Attachment } from './entities/attachment.entity';
 import { S3Service } from '../aws-s3/s3.service';
 
@@ -16,12 +15,13 @@ export class AttachmentUploadService {
   // 파일 업로드
   async uploadFile(file: Express.Multer.File) {
     try {
-      const fileUrl = await this.s3Service.uploadFile(file, 'your-bucket-name');
+      const fileUrl = await this.s3Service.uploadFile(file, 's3-bucket-boardapp');
       return {
         message: 'File uploaded successfully',
         url: fileUrl,
       };
     } catch (err) {
+      console.error('S3 Upload Error:', err);
       throw new HttpException('Failed to upload file', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
