@@ -5,13 +5,12 @@ import { UserResponseDto } from "src/user/dto/user-response.dto";
 
 export class ArticleWithAttachmentAndUserResponseDto {
     id: number;
-    author: string;
     title: string;
     contents: string;
     status: ArticleStatus;
     createdAt: Date;
     updatedAt: Date;
-    user: UserResponseDto;
+    author: UserResponseDto;
     attachments: AttachmentResponseDto[];
 
     constructor(article: Article) {
@@ -22,7 +21,7 @@ export class ArticleWithAttachmentAndUserResponseDto {
         this.status = article.status;
         this.createdAt = article.createdAt;
         this.updatedAt = article.updatedAt;
-        this.user = article.user ? new UserResponseDto(article.user) : null;
+        this.author = article.author ? new UserResponseDto(article.author) : null;
         this.attachments = article.attachments?article.attachments.map(attachment => new AttachmentResponseDto(attachment)) 
         : [];
     }
