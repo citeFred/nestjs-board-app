@@ -15,10 +15,10 @@ export class AttachmentUploadService {
   // 파일 업로드
   async uploadFile(file: Express.Multer.File) {
     try {
-      const fileUrl = await this.s3Service.uploadFile(file, 's3-bucket-boardapp');
+      const fileMetadata = await this.s3Service.uploadFile(file, 'public');
       return {
         message: 'File uploaded successfully',
-        url: fileUrl,
+        ...fileMetadata,
       };
     } catch (err) {
       console.error('S3 Upload Error:', err);
