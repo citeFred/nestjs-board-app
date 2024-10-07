@@ -5,7 +5,6 @@ export class ProfilePictureResponseDto {
     id: number;
     filename: string;
     mimetype: string;
-    path: string;
     size: number;
     profilePictureType: ProfilePictureType;
     url: string;
@@ -16,7 +15,6 @@ export class ProfilePictureResponseDto {
         this.id = file.id;
         this.filename = file.filename;
         this.mimetype = file.mimetype;
-        this.path = file.path;
         this.size = file.size;
         this.profilePictureType = file.profilePictureType;
         this.url = file.url;
