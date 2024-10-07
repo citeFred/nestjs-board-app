@@ -5,7 +5,6 @@ export class AttachmentResponseDto {
     id: number;
     filename: string;
     mimetype: string;
-    path: string;
     size: number;
     attachmentType: AttachmentType;
     url: string;
@@ -16,7 +15,6 @@ export class AttachmentResponseDto {
         this.id = file.id;
         this.filename = file.filename;
         this.mimetype = file.mimetype;
-        this.path = file.path;
         this.size = file.size;
         this.attachmentType = file.attachmentType;
         this.url = file.url;
