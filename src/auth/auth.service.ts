@@ -39,11 +39,11 @@ export class AuthService {
             Object.assign({}, signUpRequestDto, { password: hashedPassword })
         );
 
-        if (file) {
-            await this.profilePictureService.uploadProfilePicture(file, newUser);
-        }
-
         const savedUser = await this.usersRepository.save(newUser);
+
+        if (file) {
+            await this.profilePictureService.uploadProfilePicture(file, savedUser);
+        }
 
         this.logger.verbose(`User signed up successfully with email: ${savedUser.email}`);
         this.logger.debug(`User details: ${JSON.stringify(savedUser)}`);
