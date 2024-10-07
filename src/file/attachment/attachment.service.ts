@@ -25,7 +25,6 @@ export class AttachmentService {
     // 파일 메타데이터 생성 메서드
     private async createFileMetadata(result: any, article: Article): Promise<Attachment> {
         const newFile = new Attachment();
-        newFile.path = result.filePath;
         newFile.filename = result.filename;
         newFile.mimetype = result.mimetype;
         newFile.size = result.size;

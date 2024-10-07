@@ -12,9 +12,6 @@ export class ProfilePicture extends BaseEntity {
     mimetype: string;
   
     @Column()
-    path: string;
-  
-    @Column()
     size: number;
 
     @Column()
