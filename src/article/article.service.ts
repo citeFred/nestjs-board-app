@@ -31,12 +31,12 @@ export class ArticleService {
                 status: ArticleStatus.PUBLIC,
             })
         );
-    
-        if (file) {
-            await this.attachmentService.uploadArticleFiles(file, newArticle);
-        }
-    
+
         const savedArticle = await this.articleRepository.save(newArticle);
+
+        if (file) {
+            await this.attachmentService.uploadArticleFiles(file, savedArticle);
+        }
     
         this.logger.verbose(`Article created successfully: ${JSON.stringify(savedArticle)}`);
         this.logger.debug(`Article details: ${JSON.stringify(savedArticle)}`);
@@ -83,7 +83,7 @@ export class ArticleService {
         this.logger.verbose(`Retrieving Article with ID ${id}`);
         const foundArticle = await this.articleRepository.createQueryBuilder("article")
             .leftJoinAndSelect("article.attachments", "attachment")
-            .leftJoinAndSelect("article.author", "user") // user에서 author로 변경
+            .leftJoinAndSelect("article.author", "user")
             .where("article.id = :id", { id })
             .getOne();
 
