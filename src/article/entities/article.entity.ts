@@ -7,9 +7,6 @@ import { Attachment } from "src/file/attachment/entities/attachment.entity";
 @Entity()
 export class Article extends BaseEntity { 
     @Column()
-    author: string;
-
-    @Column()
     title: string;
 
     @Column()
@@ -19,7 +16,7 @@ export class Article extends BaseEntity {
     status: ArticleStatus;
 
     @ManyToOne(() => User, user => user.articles, { eager: true, onDelete: 'CASCADE' })
-    user: User;
+    author: User;
 
     @OneToMany(() => Attachment, attachment => attachment.article, { eager: true })
     attachments: Attachment[];

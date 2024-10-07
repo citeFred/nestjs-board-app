@@ -27,7 +27,7 @@ export class ArticleService {
         
         const newArticle = this.articleRepository.create(
             Object.assign({}, createArticleRequestDto, { 
-                author: logginedUser.username,
+                author: logginedUser,
                 status: ArticleStatus.PUBLIC,
             })
         );
@@ -45,7 +45,7 @@ export class ArticleService {
 
     // 전체 게시글 조회
     async getAllArticles(): Promise<Article[]> {
-        this.logger.verbose('Retrieving all Article');
+        this.logger.verbose('Retrieving all Articles');
         const foundArticles = await this.articleRepository.find();
         this.logger.verbose(`All articles retrieved successfully: ${JSON.stringify(foundArticles)}`);
         return foundArticles;
@@ -57,7 +57,7 @@ export class ArticleService {
         const skip: number = (page - 1) * limit;
     
         const [foundArticles, totalCount] = await this.articleRepository.createQueryBuilder("article")
-            .leftJoinAndSelect("article.user", "user")
+            .leftJoinAndSelect("article.author", "user")
             .skip(skip)
             .take(limit)
             .orderBy("article.createdAt", "DESC") // 내림차순
@@ -71,11 +71,11 @@ export class ArticleService {
     // 나의 게시글 조회
     async getMyAllArticles(user: User): Promise<Article[]> {
         this.logger.verbose(`User ${user.username} is retrieving their own Articles`);
-        const foundArticle = await this.articleRepository.createQueryBuilder('article')
-            .where('article.userId = :userId', { userId : user.id }) 
+        const foundArticles = await this.articleRepository.createQueryBuilder('article')
+            .where('article.author.id = :userId', { userId : user.id })
             .getMany(); 
-        this.logger.verbose(`User ${user.username} retrieved their own Articles: ${JSON.stringify(foundArticle)}`);
-        return foundArticle; 
+        this.logger.verbose(`User ${user.username} retrieved their own Articles: ${JSON.stringify(foundArticles)}`);
+        return foundArticles; 
     }
 
     // 특정 번호의 게시글 조회
@@ -83,7 +83,7 @@ export class ArticleService {
         this.logger.verbose(`Retrieving Article with ID ${id}`);
         const foundArticle = await this.articleRepository.createQueryBuilder("article")
             .leftJoinAndSelect("article.attachments", "attachment")
-            .leftJoinAndSelect("article.user", "user")
+            .leftJoinAndSelect("article.author", "user") // user에서 author로 변경
             .where("article.id = :id", { id })
             .getOne();
 
@@ -96,41 +96,41 @@ export class ArticleService {
     }
 
     // 특정 작성자의 게시글 조회
-    async getArticlesByAuthor(author: string): Promise<Article[]> {
-        this.logger.verbose(`Retrieving Articles by author: ${author}`);
-        const foundArticles = await this.articleRepository.findBy({author});
+    async getArticlesByAuthor(author: User): Promise<Article[]> {
+        this.logger.verbose(`Retrieving Articles by author: ${author.username}`);
+        const foundArticles = await this.articleRepository.find({ where : { author: author }});
         if (foundArticles.length === 0) {
-            this.logger.warn(`No Articles found for author ${author}`);
-            throw new NotFoundException(`No Articles found for author ${author}`);
+            this.logger.warn(`No Articles found for author ${author.username}`);
+            throw new NotFoundException(`No Articles found for author ${author.username}`);
         }
-        this.logger.verbose(`Articles retrieved by author ${author}: ${JSON.stringify(foundArticles)}`);
+        this.logger.verbose(`Articles retrieved by author ${author.username}: ${JSON.stringify(foundArticles)}`);
         return foundArticles;
     }
 
     // 특정 번호의 게시글 삭제
-    async deleteArticleById(id: number, user: User): Promise<void> {
-        this.logger.verbose(`User ${user.username} is attempting to delete Article with ID ${id}`);
+    async deleteArticleById(id: number, logginedUser: User): Promise<void> {
+        this.logger.verbose(`User ${logginedUser.username} is attempting to delete Article with ID ${id}`);
         const foundArticle = await this.getArticleById(id);
-        if (foundArticle.user.id !== user.id) {
-            this.logger.warn(`User ${user.username} attempted to delete Article ID ${id} without permission`);
+        if (foundArticle.author.id !== logginedUser.id) {
+            this.logger.warn(`User ${logginedUser.username} attempted to delete Article ID ${id} without permission`);
             throw new UnauthorizedException(`You do not have permission to delete this Article`);
         }
         await this.articleRepository.remove(foundArticle);
-        this.logger.verbose(`Article with ID ${id} deleted by User ${user.username}`);
+        this.logger.verbose(`Article with ID ${id} deleted by User ${logginedUser.username}`);
     }
 
     // 특정 번호의 게시글의 일부 수정(관리자가 부적절한 글을 비공개로 설정)
-    async updateArticleStatusById(id: number, status: ArticleStatus, user: User): Promise<void> {
-        this.logger.verbose(`User ${user.username} is attempting to update the status of Article with ID ${id} to ${status}`);
-        if (user.role === UserRole.ADMIN) {
+    async updateArticleStatusById(id: number, status: ArticleStatus, logginedUser: User): Promise<void> {
+        this.logger.verbose(`User ${logginedUser.username} is attempting to update the status of Article with ID ${id} to ${status}`);
+        if (logginedUser.role === UserRole.ADMIN) {
             const updatedArticle = await this.articleRepository.update(id, { status });
             if (updatedArticle.affected === 0) {
                 this.logger.warn(`No Article found to update with ID ${id}`);
                 throw new NotFoundException(`There's no updated record or Article with ID ${id} not found`);
             }
-            this.logger.verbose(`Article with ID ${id} status updated to ${status} by Admin ${user.username}`);
+            this.logger.verbose(`Article with ID ${id} status updated to ${status} by Admin ${logginedUser.username}`);
         } else {
-            this.logger.warn(`User ${user.username} attempted to update Article status without permission`);
+            this.logger.warn(`User ${logginedUser.username} attempted to update Article status without permission`);
             throw new UnauthorizedException(`You do not have permission to update the status of this Article`);
         }
     }
@@ -141,12 +141,12 @@ export class ArticleService {
         
         const foundArticle = await this.getArticleById(id);
 
-        if (foundArticle.user.id !== logginedUser.id) {
+        if (foundArticle.author.id !== logginedUser.id) {
             this.logger.warn(`User ${logginedUser.username} attempted to update Article details ${id} without permission`);
             throw new UnauthorizedException(`You do not have permission to update this Article`);
         }
 
-        Object.assign(foundArticle, updateArticleRequestDto)
+        Object.assign(foundArticle, updateArticleRequestDto);
 
         if (file) {
             await this.attachmentService.uploadArticleFiles(file, foundArticle);

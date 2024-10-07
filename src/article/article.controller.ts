@@ -90,7 +90,7 @@ export class ArticleController {
     // 특정 작성자의 게시글 조회
     @Get('search')
     async getArticlesByAuthor(
-        @Query('author') author: string
+        @Query('author') author: User
     ): Promise<ApiResponse<ArticleResponseDto[]>> {
         this.logger.verbose(`Searching Articles by author ${author}`);
         const foundArticles = await this.articleService.getArticlesByAuthor(author);
