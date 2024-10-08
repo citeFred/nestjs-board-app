@@ -10,8 +10,14 @@ NestJS(Typescript) + TypeORM 게시판 웹 서비스
 - 기본적인 게시판 NestJS 백엔드 서버를 구현해보는 프로젝트 입니다.
 - 개발 블로그를 통해 개념/과정을 상세히 확인 할 수 있습니다.
 https://www.citefred.com/tags/nestjs
-<br>
 
+
+## 🚀 배포
+- DNS&HTTPS : `Route53`, `ACM`
+- Deployment : `S3`, `CloudFront`
+- URL : https://www.boardapp.site
+
+## 🚧 실행 추가 설정
 - `root/.env` 파일 작성이 필요합니다. 현재 AWS 연동 과정 진행으로 `RDS Bucket주소`, `AccessKey`, `SecretKey` 필요한 상태
 - 발급 과정은 블로그의 정리 내용을 참고하시길 바랍니다. https://www.citefred.com/nestjs/21
 ```.env
@@ -60,8 +66,10 @@ https://github.com/citeFred/nest-js-board-frontend
 - **MainLanguage** : `TypeScript`
 - **IDE** : `VSCode`
 - **Framework** : `NestJS`, `TypeORM`
-- **Database** : `MySQL@8.0`
-- **Server** : `Express`
+- **Database** : `MySQL@8.0` on `RDS`
+- **Server** : `Express` on `EC2`
+- **Static** : `S3`, `CloudFront`
+- **Security** : `HTTPS-SSL`, `BCrypt`
 
 ## 📌 주요 기능
 #### 로그인
