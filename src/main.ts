@@ -14,8 +14,14 @@ async function bootstrap() {
   app.use(cookieParser());
   
   app.enableCors({
-    origin: ['http://localhost:8100', 'http://localhost:4200'],
-    credentials: true,  // 필요한 경우 쿠키를 포함한 요청 허용
+    origin: [
+      'http://localhost:8100','http://localhost:4200', // 로컬 개발용
+      'https://d2r1i81lny2w8r.cloudfront.net', // CloudFront 도메인
+      'https://boardapp.site', // 커스텀 도메인
+      'https://www.boardapp.site', // www 커스텀 도메인
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
   });
 
   app.useStaticAssets(path.join(process.cwd(), 'public'), {
