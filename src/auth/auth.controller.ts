@@ -42,15 +42,10 @@ export class AuthController {
         const userResponseDto = new UserResponseDto(user);
         this.logger.verbose(`User signed in successfully: ${JSON.stringify(userResponseDto)}`);
 
-        // [3] 쿠키 설정
-        res.cookie('Authorization', jwtToken, {
-            httpOnly: false, // 클라이언트 측 스크립트에서 쿠키 접근 금지
-            secure: false, // HTTPS에서만 쿠키 전송, 임시 비활성화
-            maxAge: 3600000, // 1시간
-            sameSite: 'lax', // CSRF 공격 방어 및 크로스 사이트 요청에서 쿠키 포함
-        });
+        // JWT를 응답 헤더에 설정
+        res.setHeader('Authorization', `Bearer ${jwtToken}`);
 
-        res.status(200).json(new ApiResponse(true, 200, 'Sign in successful', { jwtToken, user: userResponseDto }));
+        res.status(200).json(new ApiResponse(true, 200, 'Sign in successful', { user: userResponseDto }));
     }
 
     // 인증된 회원이 들어갈 수 있는 테스트 URL 경로
